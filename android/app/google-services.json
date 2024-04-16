@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "453164778220",
+    "project_id": "bustrack-d6932",
+    "storage_bucket": "bustrack-d6932.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:453164778220:android:2805a32237a539bab2dbc9",
+        "android_client_info": {
+          "package_name": "com.example.bustrack"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0HQdKvM_kLuTTJA833smXLPi6pH7HFns"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
