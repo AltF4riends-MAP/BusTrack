@@ -83,4 +83,5 @@ class DefaultFirebaseOptions {
     authDomain: 'bustrack-d6932.firebaseapp.com',
     storageBucket: 'bustrack-d6932.appspot.com',
   );
+
 }
