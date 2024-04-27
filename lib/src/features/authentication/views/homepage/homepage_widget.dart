@@ -1,4 +1,10 @@
+import 'package:bustrack/src/features/authentication/views/login/firebaseauth.dart';
+import 'package:bustrack/src/features/authentication/views/login/formcontainer.dart';
+import 'package:bustrack/src/features/authentication/views/register/register_form_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -8,16 +14,34 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  // Add a variable to track sign-in state
+  bool _isLoggedIn = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text(
-          style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1)),
+        title: Text(
           "Home Page",
+          style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1)),
         ),
         backgroundColor: Color.fromRGBO(124, 0, 0, 1),
+        actions: [
+          // Add the logout button here
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () async {
+              if (_isLoggedIn) {
+                await context.read<FirebaseAuthService>().signOut();
+                setState(() {
+                  _isLoggedIn = false;
+                });
+                Navigator.pushReplacementNamed(context, '/home');
+              }
+            },
+          ),
+        ],
       ),
       body: Stack(children: <Widget>[
         new Container(
@@ -35,7 +59,7 @@ class _HomePageState extends State<HomePage> {
           width: 500, // Set the width to 200 pixels
           height: 500, // Set the height to 200 pixels
           decoration: BoxDecoration(
-            color: Colors.transparent, // Set background to transparent
+            color: Colors.white, // Set background to transparent
           ),
           child: Padding(
             padding:
@@ -54,15 +78,14 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
                 const SizedBox(height: 20.0),
-                _buildImageButton(
-                    "assets/images/homepage/LocationIcon.png", "Location"),
+                _buildImageButton("assets/images/LocationIcon.png", "Location"),
               ],
             ),
           ),
         )),
       ]),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
@@ -72,8 +95,16 @@ class _HomePageState extends State<HomePage> {
             label: 'Profile',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.logout),
-            label: 'Logout',
+            icon: InkWell(
+              onTap: () {
+                setState(() {
+                  _isLoggedIn = false;
+                });
+                Navigator.pushReplacementNamed(context, '/login');
+              },
+              child: Icon(Icons.logout),
+            ),
+            label: _isLoggedIn ? 'Logout' : 'Logged Out',
           ),
         ],
         currentIndex: 0,
@@ -84,21 +115,27 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildImageButton(String imagePath, String label) {
-    return Column(
-      children: [
-        Container(
-          width: 80,
-          height: 80,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(imagePath),
-              fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: () {
+        // Handle button press here (e.g., print a message)
+        print("Button '$label' pressed!");
+      },
+      child: Column(
+        children: [
+          Container(
+            width: 80,
+            height: 80,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(imagePath),
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: 5.0),
-        Text(label),
-      ],
+          const SizedBox(height: 5.0),
+          Text(label),
+        ],
+      ),
     );
   }
 }
