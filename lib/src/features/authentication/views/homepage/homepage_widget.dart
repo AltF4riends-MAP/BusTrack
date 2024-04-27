@@ -91,8 +91,14 @@ class _HomePageState extends State<HomePage> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
+            icon: InkWell(
+              onTap: () {
+                setState(() {});
+                Navigator.pushReplacementNamed(context, '/login');
+              },
+              child: Icon(Icons.person),
+            ),
+            label: _isLoggedIn ? 'Logout' : 'Logged Out',
           ),
           BottomNavigationBarItem(
             icon: InkWell(
@@ -100,7 +106,13 @@ class _HomePageState extends State<HomePage> {
                 setState(() {
                   _isLoggedIn = false;
                 });
-                Navigator.pushReplacementNamed(context, '/login');
+                /*Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ManageProfile()),
+                      (route) => false,
+                    );
+                    */
               },
               child: Icon(Icons.logout),
             ),
