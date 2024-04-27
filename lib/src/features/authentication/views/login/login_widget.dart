@@ -1,5 +1,6 @@
 import 'package:bustrack/src/features/authentication/views/login/firebaseauth.dart';
 import 'package:bustrack/src/features/authentication/views/login/formcontainer.dart';
+import 'package:bustrack/src/features/authentication/views/manageprofile/manage_profile.dart';
 import 'package:bustrack/src/features/authentication/views/register/register_form_widget.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -127,18 +128,29 @@ class _LoginPageState extends State<LoginPage> {
                       color: Colors.red,
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const Center(
+                    child: Center(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SizedBox(
                             width: 5,
                           ),
-                          Text(
-                            "Sign in with Google",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ManageProfile()),
+                                (route) => false,
+                              );
+                            },
+                            child: const Text(
+                              "Manage Profile",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ],
