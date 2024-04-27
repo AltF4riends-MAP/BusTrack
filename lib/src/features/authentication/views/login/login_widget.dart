@@ -1,9 +1,9 @@
+import 'package:bustrack/src/features/authentication/views/forgotpassword/forgetPassword.dart';
 import 'package:bustrack/src/features/authentication/views/login/firebaseauth.dart';
 import 'package:bustrack/src/features/authentication/views/login/formcontainer.dart';
 import 'package:bustrack/src/features/authentication/views/register/register_form_widget.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
@@ -152,21 +152,20 @@ class _LoginPageState extends State<LoginPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Don't have an account?"),
+                    const Text("Forgot your password?"),
                     const SizedBox(
                       width: 5,
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushAndRemoveUntil(
+                        Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const RegisterPage()),
-                          (route) => false,
+                              builder: (context) => ForgetPassword()),
                         );
                       },
                       child: const Text(
-                        "Sign Up",
+                        "Click Here",
                         style: TextStyle(
                           color: Colors.blue,
                           fontWeight: FontWeight.bold,
