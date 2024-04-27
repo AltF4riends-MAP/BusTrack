@@ -47,12 +47,15 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     _buildImageButton(
-                        "assets/images/TimetableIcon.png", "Timetable"),
-                    _buildImageButton("assets/images/RoutesIcon.png", "Routes"),
+                        "assets/images/homepage/TimetableIcon.png",
+                        "Timetable"),
+                    _buildImageButton(
+                        "assets/images/homepage/RoutesIcon.png", "Routes"),
                   ],
                 ),
                 const SizedBox(height: 20.0),
-                _buildImageButton("assets/images/LocationIcon.png", "Location"),
+                _buildImageButton(
+                    "assets/images/homepage/LocationIcon.png", "Location"),
               ],
             ),
           ),
