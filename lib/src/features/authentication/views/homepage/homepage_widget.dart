@@ -1,7 +1,7 @@
 import 'package:bustrack/src/features/authentication/views/login/firebaseauth.dart';
 import 'package:bustrack/src/features/authentication/views/login/formcontainer.dart';
+import 'package:bustrack/src/features/authentication/views/manageprofile/manage_profile.dart';
 import 'package:bustrack/src/features/authentication/views/register/register_form_widget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -107,13 +107,13 @@ class _HomePageState extends State<HomePage> {
                 setState(() {
                   _isLoggedIn = false;
                 });
-                /*Navigator.pushAndRemoveUntil(
+                Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
                           builder: (context) => const ManageProfile()),
                       (route) => false,
                     );
-                    */
+
               },
               child: Icon(Icons.logout),
             ),
