@@ -1,5 +1,6 @@
 import 'package:bustrack/src/features/authentication/views/login/firebaseauth.dart';
 import 'package:bustrack/src/features/authentication/views/login/formcontainer.dart';
+import 'package:bustrack/src/features/authentication/views/login/login_widget.dart';
 import 'package:bustrack/src/features/authentication/views/manageprofile/manage_profile.dart';
 import 'package:bustrack/src/features/authentication/views/register/register_form_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -88,18 +89,36 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: InkWell(
+              onTap: () {
+                setState(() {
+                  _isLoggedIn = false;
+                });
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomePage()),
+                  (route) => false,
+                );
+              },
+              child: Icon(Icons.home),
+            ),
             label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: InkWell(
               onTap: () {
                 setState(() {});
-                Navigator.pushReplacementNamed(context, '/login');
+                Navigator.pushReplacementNamed(context, '/home');
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ManageProfile()),
+                  (route) => false,
+                );
               },
               child: Icon(Icons.person),
             ),
-            label: _isLoggedIn ? 'Logout' : 'Logged Out',
+            label: 'Profile',
           ),
           BottomNavigationBarItem(
             icon: InkWell(
@@ -108,12 +127,10 @@ class _HomePageState extends State<HomePage> {
                   _isLoggedIn = false;
                 });
                 Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ManageProfile()),
-                      (route) => false,
-                    );
-
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  (route) => false,
+                );
               },
               child: Icon(Icons.logout),
             ),

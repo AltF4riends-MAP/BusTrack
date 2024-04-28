@@ -1,4 +1,5 @@
 import 'package:bustrack/src/features/authentication/views/forgotpassword/forgetPassword.dart';
+import 'package:bustrack/src/features/authentication/views/homepage/homepage_widget.dart';
 import 'package:bustrack/src/features/authentication/views/login/firebaseauth.dart';
 import 'package:bustrack/src/features/authentication/views/login/formcontainer.dart';
 import 'package:bustrack/src/features/authentication/views/manageprofile/manage_profile.dart';
@@ -125,7 +126,7 @@ class _LoginPageState extends State<LoginPage> {
                     width: double.infinity,
                     height: 45,
                     decoration: BoxDecoration(
-                      color: Colors.red,
+                      color: Colors.grey,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Center(
@@ -140,13 +141,12 @@ class _LoginPageState extends State<LoginPage> {
                               Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        const ManageProfile()),
+                                    builder: (context) => const HomePage()),
                                 (route) => false,
                               );
                             },
                             child: const Text(
-                              "Manage Profile",
+                              "Guest Login",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -208,12 +208,12 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
                 const SizedBox(
-                  height:5,
+                  height: 5,
                 ),
                 Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                  const Text("Don't have an Account?"),
+                    const Text("Don't have an Account?"),
                     const SizedBox(
                       width: 5,
                     ),
@@ -233,7 +233,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
-                ],
+                  ],
                 ),
               ],
             ),

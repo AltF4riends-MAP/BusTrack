@@ -1,4 +1,6 @@
+import 'package:bustrack/src/features/authentication/views/homepage/homepage_widget.dart';
 import 'package:bustrack/src/features/authentication/views/login/formcontainer.dart';
+import 'package:bustrack/src/features/authentication/views/login/login_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -196,26 +198,36 @@ class _ManageProfileState extends State<ManageProfile> {
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: InkWell(
+              onTap: () {
+                setState(() {
+                  _isLoggedIn = false;
+                });
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomePage()),
+                  (route) => false,
+                );
+              },
+              child: Icon(Icons.home),
+            ),
             label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: InkWell(
               onTap: () {
-                setState(() {
-
-                });
-                Navigator.pushReplacementNamed(context, '/login');
+                setState(() {});
+                Navigator.pushReplacementNamed(context, '/home');
                 Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ManageProfile()),
-                      (route) => false,
-                    );
-           },
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ManageProfile()),
+                  (route) => false,
+                );
+              },
               child: Icon(Icons.person),
             ),
-            label: _isLoggedIn ? 'Logout' : 'Logged Out',
+            label: 'Profile',
           ),
           BottomNavigationBarItem(
             icon: InkWell(
@@ -224,12 +236,10 @@ class _ManageProfileState extends State<ManageProfile> {
                   _isLoggedIn = false;
                 });
                 Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ManageProfile()),
-                      (route) => false,
-                    );
-
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  (route) => false,
+                );
               },
               child: Icon(Icons.logout),
             ),
