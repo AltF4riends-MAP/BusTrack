@@ -41,6 +41,9 @@ dependencies:
   cloud_firestore: ^4.17.2
   provider: ^6.1.2
   firebase_ui_auth: ^1.14.0
+  firebase_database: ^10.5.4
+  collection: ^1.18.0
+  cloud_firestore: ^4.17.2
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +77,7 @@ flutter:
     - assets/images/homepage/TimetableIcon.png
     - assets/images/homepage/RoutesIcon.png
     - assets/images/homepage/LocationIcon.png
+    - assets/images/background_mp.jpg
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
