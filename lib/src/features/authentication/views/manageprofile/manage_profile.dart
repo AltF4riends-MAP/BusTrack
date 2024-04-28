@@ -28,6 +28,7 @@ class _ManageProfileState extends State<ManageProfile> {
   TextEditingController _fNameController = TextEditingController();
   TextEditingController _lNameController = TextEditingController();
   bool _isEdit = false;
+  bool _isLoggedIn = true;
 
   @override
   void dispose() {
@@ -43,157 +44,195 @@ class _ManageProfileState extends State<ManageProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: const Text(
-            style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1)),
-            "Manage Profile",
-          ),
-          backgroundColor: Color.fromRGBO(104, 1, 1, 1),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Text(
+          style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1)),
+          "Manage Profile",
         ),
-        body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Stack(children: <Widget>[
-            Container(
-              width: 820, // Set the width to 200 pixels
-              height: 1100,
-              decoration: new BoxDecoration(
-                image: new DecorationImage(
-                  image: new AssetImage("assets/images/background_mp.jpg"),
-                  fit: BoxFit.cover,
-                ),
+        backgroundColor: Color.fromRGBO(104, 1, 1, 1),
+      ),
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Stack(children: <Widget>[
+          Container(
+            width: 820, // Set the width to 200 pixels
+            height: 1100,
+            decoration: new BoxDecoration(
+              image: new DecorationImage(
+                image: new AssetImage("assets/images/background_mp.jpg"),
+                fit: BoxFit.cover,
               ),
             ),
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(22.0),
-                child: Container(
-                  width: 320, // Set the width to 200 pixels
-                  height: 600, // Set the height to 200 pixels
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(22.0),
+              child: Container(
+                width: 320, // Set the width to 200 pixels
+                height: 600, // Set the height to 200 pixels
 
-                  decoration: BoxDecoration(
-                    color: Color.fromRGBO(255, 255, 255, 1),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border(
-                      left: BorderSide(
-                        color: Color.fromARGB(255, 0, 0, 0),
-                        width: 4,
-                      ),
-                      top: BorderSide(
-                        color: Color.fromARGB(255, 0, 0, 0),
-                        width: 4,
-                      ),
-                      right: BorderSide(
-                        color: Color.fromARGB(255, 0, 0, 0),
-                        width: 4,
-                      ),
-                      bottom: BorderSide(
-                        color: Color.fromARGB(255, 0, 0, 0),
-                        width: 4,
-                      ),
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(255, 255, 255, 1),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border(
+                    left: BorderSide(
+                      color: Color.fromARGB(255, 0, 0, 0),
+                      width: 4,
+                    ),
+                    top: BorderSide(
+                      color: Color.fromARGB(255, 0, 0, 0),
+                      width: 4,
+                    ),
+                    right: BorderSide(
+                      color: Color.fromARGB(255, 0, 0, 0),
+                      width: 4,
+                    ),
+                    bottom: BorderSide(
+                      color: Color.fromARGB(255, 0, 0, 0),
+                      width: 4,
                     ),
                   ),
                 ),
               ),
             ),
-            Center(
-                child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 40),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Manage Profile",
-                      style:
-                          TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    FormContainerWidget(
-                      controller: _emailController,
-                      hintText: "Email",
-                      isPasswordField: false,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    FormContainerWidget(
-                      controller: _passwordController,
-                      hintText: "Password",
-                      isPasswordField: false,
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    FormContainerWidget(
-                      controller: _idNumController,
-                      hintText: "Matric No/Staff ID",
-                      isPasswordField: false,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    FormContainerWidget(
-                      controller: _icNumController,
-                      hintText: "IC Number/Passport Number",
-                      isPasswordField: false,
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    FormContainerWidget(
-                      controller: _fNameController,
-                      hintText: "First Name",
-                      isPasswordField: false,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    FormContainerWidget(
-                      controller: _lNameController,
-                      hintText: "Last Name",
-                      isPasswordField: false,
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        updateProfile(
-                            _emailController,
-                            _passwordController,
-                            _idNumController,
-                            _icNumController,
-                            _fNameController,
-                            _lNameController);
-                      },
-                      child: Container(
-                        width: double.infinity,
-                        height: 45,
-                        decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Center(
-                          child: _isEdit
-                              ? const CircularProgressIndicator(
-                                  color: Colors.white,
-                                )
-                              : const Text(
-                                  "Save Profile",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                        ),
-                      ),
-                    ),
-                  ]),
-            ))
-          ]),
-        ));
+          ),
+          Center(
+              child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 40),
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              const Text(
+                "Manage Profile",
+                style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              FormContainerWidget(
+                controller: _emailController,
+                hintText: "Email",
+                isPasswordField: false,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              FormContainerWidget(
+                controller: _passwordController,
+                hintText: "Password",
+                isPasswordField: false,
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              FormContainerWidget(
+                controller: _idNumController,
+                hintText: "Matric No/Staff ID",
+                isPasswordField: false,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              FormContainerWidget(
+                controller: _icNumController,
+                hintText: "IC Number/Passport Number",
+                isPasswordField: false,
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              FormContainerWidget(
+                controller: _fNameController,
+                hintText: "First Name",
+                isPasswordField: false,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              FormContainerWidget(
+                controller: _lNameController,
+                hintText: "Last Name",
+                isPasswordField: false,
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              GestureDetector(
+                onTap: () {
+                  updateProfile(
+                      _emailController,
+                      _passwordController,
+                      _idNumController,
+                      _icNumController,
+                      _fNameController,
+                      _lNameController);
+                },
+                child: Container(
+                  width: double.infinity,
+                  height: 45,
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: _isEdit
+                        ? const CircularProgressIndicator(
+                            color: Colors.white,
+                          )
+                        : const Text(
+                            "Save Profile",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                  ),
+                ),
+              ),
+            ]),
+          ))
+        ]),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: InkWell(
+              onTap: () {
+                setState(() {});
+                Navigator.pushReplacementNamed(context, '/login');
+              },
+              child: Icon(Icons.person),
+            ),
+            label: _isLoggedIn ? 'Logout' : 'Logged Out',
+          ),
+          BottomNavigationBarItem(
+            icon: InkWell(
+              onTap: () {
+                setState(() {
+                  _isLoggedIn = false;
+                });
+                /*Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ManageProfile()),
+                      (route) => false,
+                    );
+                    */
+              },
+              child: Icon(Icons.logout),
+            ),
+            label: _isLoggedIn ? 'Logout' : 'Logged Out',
+          ),
+        ],
+        currentIndex: 0,
+        selectedItemColor: Colors.red,
+        unselectedItemColor: Colors.grey,
+      ),
+    );
   }
 
   Future<void> readProfile(
