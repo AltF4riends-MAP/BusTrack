@@ -202,9 +202,17 @@ class _ManageProfileState extends State<ManageProfile> {
           BottomNavigationBarItem(
             icon: InkWell(
               onTap: () {
-                setState(() {});
+                setState(() {
+
+                });
                 Navigator.pushReplacementNamed(context, '/login');
-              },
+                Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ManageProfile()),
+                      (route) => false,
+                    );
+           },
               child: Icon(Icons.person),
             ),
             label: _isLoggedIn ? 'Logout' : 'Logged Out',
@@ -215,13 +223,13 @@ class _ManageProfileState extends State<ManageProfile> {
                 setState(() {
                   _isLoggedIn = false;
                 });
-                /*Navigator.pushAndRemoveUntil(
+                Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
                           builder: (context) => const ManageProfile()),
                       (route) => false,
                     );
-                    */
+
               },
               child: Icon(Icons.logout),
             ),
