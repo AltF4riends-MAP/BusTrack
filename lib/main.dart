@@ -3,6 +3,7 @@ import 'package:bustrack/src/features/authentication/views/login/login_widget.da
 import 'package:bustrack/src/features/authentication/views/login/splashscreen_widget.dart';
 import 'package:bustrack/src/features/authentication/views/manageprofile/manage_profile.dart';
 import 'package:bustrack/src/features/authentication/views/register/register_form_widget.dart';
+import 'package:bustrack/src/features/authentication/views/timetable/view_timetable.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
         '/signUp': (context) => const RegisterPage(),
         '/home': (context) => const HomePage(),
         '/manageProfile': (context) => const ManageProfile(),
+        '/viewTimetable': (context) => const ViewTimetable(),
       },
     );
   }

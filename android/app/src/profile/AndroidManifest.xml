@@ -1,7 +1,27 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- The INTERNET permission is required for development. Specifically,
-         the Flutter tool needs it to communicate with the running application
-         to allow setting breakpoints, to provide hot reload, etc.
-    -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.your_app_package_name">
+
+    <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
+    <application
+        ...
+        <!-- Google Maps API Key -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBOdmtNyU8nRS6KZ56dJ8tNfgqc3FMd2"/>
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version"/>
+
+        <!-- Google Maps activity -->
+        <activity
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:label="@string/title_activity_maps"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
+
+        ...
+    </application>
 </manifest>

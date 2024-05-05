@@ -3,6 +3,7 @@ import 'package:bustrack/src/features/authentication/views/login/formcontainer.d
 import 'package:bustrack/src/features/authentication/views/login/login_widget.dart';
 import 'package:bustrack/src/features/authentication/views/manageprofile/manage_profile.dart';
 import 'package:bustrack/src/features/authentication/views/register/register_form_widget.dart';
+import 'package:bustrack/src/features/authentication/views/timetable/view_timetable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -147,8 +148,16 @@ class _HomePageState extends State<HomePage> {
   Widget _buildImageButton(String imagePath, String label) {
     return GestureDetector(
       onTap: () {
-        // Handle button press here (e.g., print a message)
-        print("Button '$label' pressed!");
+        if (label == "Timetable") {
+          setState(() {});
+
+          Navigator.pushReplacementNamed(context, '/viewTimetable');
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const ViewTimetable()),
+            (route) => false,
+          );
+        }
       },
       child: Column(
         children: [

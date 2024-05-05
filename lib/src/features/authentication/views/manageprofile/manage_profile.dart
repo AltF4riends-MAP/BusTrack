@@ -3,7 +3,6 @@ import 'package:bustrack/src/features/authentication/views/login/formcontainer.d
 import 'package:bustrack/src/features/authentication/views/login/login_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 
 import 'package:flutter/material.dart';
 
@@ -263,7 +262,6 @@ class _ManageProfileState extends State<ManageProfile> {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User? user = auth.currentUser;
     final current_user = user?.uid;
-    final uid = user?.uid;
     final DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
         .collection('User')
         .doc(current_user)
