@@ -1,164 +1,155 @@
-import 'package:bustrack/src/features/authentication/views/login/firebaseauth.dart';
-import 'package:bustrack/src/features/authentication/views/login/formcontainer.dart';
-import 'package:bustrack/src/features/authentication/views/login/login_widget.dart';
-import 'package:bustrack/src/features/authentication/views/manageprofile/manage_profile.dart';
-import 'package:bustrack/src/features/authentication/views/register/register_form_widget.dart';
-import 'package:bustrack/src/features/authentication/views/timetable/view_timetable.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:bustrack/src/features/authentication/controllers/navigations.dart';
+import 'package:bustrack/src/features/authentication/views/login/firebaseauth.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  // Add a variable to track sign-in state
-  bool _isLoggedIn = true;
+  late bool _isLoggedIn;
+
+  @override
+  void initState() {
+    super.initState();
+    _isLoggedIn = true;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text(
+        title: const Text(
           "Home Page",
-          style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1)),
+          style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Color.fromRGBO(124, 0, 0, 1),
+        backgroundColor: const Color.fromRGBO(124, 0, 0, 1),
         actions: [
-          // Add the logout button here
+          // Logout button
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
             onPressed: () async {
-              if (_isLoggedIn) {
-                await context.read<FirebaseAuthService>().signOut();
-                setState(() {
-                  _isLoggedIn = false;
-                });
-                Navigator.pushReplacementNamed(context, '/home');
-              }
+              await context.read<FirebaseAuthService>().signOut();
+              setState(() {
+                _isLoggedIn = false;
+              });
+              Navigator.pushReplacementNamed(context, '/login');
             },
           ),
         ],
       ),
-      body: Stack(children: <Widget>[
-        new Container(
-          decoration: new BoxDecoration(
-            border: Border.all(
-                color: Color.fromRGBO(0, 0, 0, 1), style: BorderStyle.solid),
-            image: new DecorationImage(
-              image: new AssetImage("assets/images/Rectangle.png"),
-              fit: BoxFit.cover,
+      body: Stack(
+        children: <Widget>[
+          Container(
+            decoration: const BoxDecoration(
+              border: Border(
+                top: BorderSide(color: Colors.black, style: BorderStyle.solid),
+                left: BorderSide(color: Colors.black, style: BorderStyle.solid),
+                right:
+                    BorderSide(color: Colors.black, style: BorderStyle.solid),
+                bottom:
+                    BorderSide(color: Colors.black, style: BorderStyle.solid),
+              ),
+              image: DecorationImage(
+                image: AssetImage("assets/images/Rectangle.png"),
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-        ),
-        Center(
+          Center(
             child: Container(
-          width: 500, // Set the width to 200 pixels
-          height: 500, // Set the height to 200 pixels
-          decoration: BoxDecoration(
-            color: Colors.white, // Set background to transparent
-          ),
-          child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              width: 500,
+              height: 500,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 15.0, vertical: 20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildImageButton(
+                          "assets/images/homepage/TimetableIcon.png",
+                          "Timetable",
+                          onTap: () {
+                            Navigator.pushNamed(context, viewTimetableRoute);
+                          },
+                        ),
+                        _buildImageButton(
+                          "assets/images/homepage/RoutesIcon.png",
+                          "Routes",
+                          onTap: () {
+                            // Navigate to routes page
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20.0),
                     _buildImageButton(
-                        "assets/images/homepage/TimetableIcon.png",
-                        "Timetable"),
-                    _buildImageButton(
-                        "assets/images/homepage/RoutesIcon.png", "Routes"),
+                      "assets/images/homepage/LocationIcon.png",
+                      "Location",
+                      onTap: () {
+                        // Navigate to location page
+                      },
+                    ),
                   ],
                 ),
-                const SizedBox(height: 20.0),
-                _buildImageButton(
-                    "assets/images/homepage/LocationIcon.png", "Location"),
-              ],
+              ),
             ),
           ),
-        )),
-      ]),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: InkWell(
-              onTap: () {
-                setState(() {
-                  _isLoggedIn = false;
-                });
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
-                  (route) => false,
-                );
-              },
-              child: Icon(Icons.home),
-            ),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.home),
             label: 'Home',
           ),
-          BottomNavigationBarItem(
-            icon: InkWell(
-              onTap: () {
-                setState(() {});
-                Navigator.pushReplacementNamed(context, '/home');
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const ManageProfile()),
-                  (route) => false,
-                );
-              },
-              child: Icon(Icons.person),
-            ),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.person),
             label: 'Profile',
           ),
           BottomNavigationBarItem(
-            icon: InkWell(
-              onTap: () {
-                setState(() {
-                  _isLoggedIn = false;
-                });
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
-                  (route) => false,
-                );
-              },
-              child: Icon(Icons.logout),
-            ),
+            icon: Icon(Icons.logout),
             label: _isLoggedIn ? 'Logout' : 'Logged Out',
           ),
         ],
         currentIndex: 0,
         selectedItemColor: Colors.red,
         unselectedItemColor: Colors.grey,
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              // Navigate to home page
+              break;
+            case 1:
+              Navigator.pushNamed(context, manageProfileRoute);
+              break;
+            case 2:
+              if (_isLoggedIn) {
+                // Logout logic
+              } else {
+                Navigator.pushNamed(context, loginRoute);
+              }
+              break;
+          }
+        },
       ),
     );
   }
 
-  Widget _buildImageButton(String imagePath, String label) {
+  Widget _buildImageButton(String imagePath, String label,
+      {required void Function() onTap}) {
     return GestureDetector(
-      onTap: () {
-        if (label == "Timetable") {
-          setState(() {});
-
-          Navigator.pushReplacementNamed(context, '/viewTimetable');
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => const ViewTimetable()),
-            (route) => false,
-          );
-        }
-      },
+      onTap: onTap,
       child: Column(
         children: [
           Container(

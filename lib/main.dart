@@ -1,9 +1,5 @@
-import 'package:bustrack/src/features/authentication/views/homepage/homepage_widget.dart';
-import 'package:bustrack/src/features/authentication/views/login/login_widget.dart';
-import 'package:bustrack/src/features/authentication/views/login/splashscreen_widget.dart';
-import 'package:bustrack/src/features/authentication/views/manageprofile/manage_profile.dart';
-import 'package:bustrack/src/features/authentication/views/register/register_form_widget.dart';
-import 'package:bustrack/src/features/authentication/views/timetable/view_timetable.dart';
+import 'package:bustrack/src/features/authentication/controllers/navigations.dart';
+import 'package:bustrack/src/features/authentication/controllers/router.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -31,18 +27,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Firebase',
-      routes: {
-        '/': (context) => const SplashScreen(
-              // Here, you can decide whether to show the LoginPage or HomePage based on user authentication
-              child: LoginPage(),
-            ),
-        '/login': (context) => const LoginPage(),
-        '/signUp': (context) => const RegisterPage(),
-        '/home': (context) => const HomePage(),
-        '/manageProfile': (context) => const ManageProfile(),
-        '/viewTimetable': (context) => const ViewTimetable(),
-      },
+      title: 'BusTrack',
+      initialRoute: loginRoute,
+      onGenerateRoute: createRoute,
     );
   }
 }

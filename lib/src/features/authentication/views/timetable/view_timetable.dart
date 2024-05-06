@@ -4,6 +4,7 @@ import 'package:bustrack/src/features/authentication/controllers/readAllControll
 import 'package:bustrack/src/features/authentication/models/bus.dart';
 import 'package:bustrack/src/features/authentication/models/stop.dart';
 import 'package:bustrack/src/features/authentication/models/route.dart';
+// Import homepage
 
 class ViewTimetable extends StatefulWidget {
   const ViewTimetable({Key? key}) : super(key: key);
@@ -89,40 +90,31 @@ class _ViewTimetableState extends State<ViewTimetable> {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(
-                                width: 10), // Add spacing between the texts
+                            SizedBox(width: 10),
                             Expanded(
                               child: Text(
                                 busList.isNotEmpty
                                     ? busList[0].busName
                                     : 'No data',
-                                style: TextStyle(
-                                    // Add your text style properties here
-                                    ),
+                                style: TextStyle(),
                               ),
                             ),
-                            SizedBox(
-                                width: 10), // Add spacing between the texts
+                            SizedBox(width: 10),
                             Expanded(
                               child: Text(
                                 routeList.isNotEmpty
                                     ? routeList[0].routeName
                                     : 'No data',
-                                style: TextStyle(
-                                    // Add your text style properties here
-                                    ),
+                                style: TextStyle(),
                               ),
                             ),
-                            SizedBox(
-                                width: 10), // Add spacing between the texts
+                            SizedBox(width: 10),
                             Expanded(
                               child: Text(
                                 stopList.isNotEmpty
                                     ? stopList[0].stopName
                                     : 'No data',
-                                style: TextStyle(
-                                    // Add your text style properties here
-                                    ),
+                                style: TextStyle(),
                               ),
                             ),
                           ],
@@ -145,11 +137,8 @@ class _ViewTimetableState extends State<ViewTimetable> {
     routeList = await read.getAllRoute();
     stopList = await read.getAllStop();
 
-    // Once the data is fetched, you can setState to trigger a rebuild
     if (mounted) {
-      setState(() {
-        // Update the state variables
-      });
+      setState(() {});
     }
   }
 }
