@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'BusTrack',
-      initialRoute: loginRoute,
+      initialRoute: splashScreenRoute,
       onGenerateRoute: createRoute,
     );
   }

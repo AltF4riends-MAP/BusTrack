@@ -55,17 +55,36 @@ class _HomePageState extends State<HomePage> {
                     BorderSide(color: Colors.black, style: BorderStyle.solid),
               ),
               image: DecorationImage(
-                image: AssetImage("assets/images/Rectangle.png"),
+                image: AssetImage("assets/images/background_mp.jpg"),
                 fit: BoxFit.cover,
               ),
             ),
           ),
           Center(
             child: Container(
-              width: 500,
+              width: 320,
               height: 500,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border(
+                  left: BorderSide(
+                    color: Color.fromARGB(255, 0, 0, 0),
+                    width: 4,
+                  ),
+                  top: BorderSide(
+                    color: Color.fromARGB(255, 0, 0, 0),
+                    width: 4,
+                  ),
+                  right: BorderSide(
+                    color: Color.fromARGB(255, 0, 0, 0),
+                    width: 4,
+                  ),
+                  bottom: BorderSide(
+                    color: Color.fromARGB(255, 0, 0, 0),
+                    width: 4,
+                  ),
+                ),
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(

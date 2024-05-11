@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:bustrack/src/features/authentication/views/login/login_widget.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -33,7 +34,7 @@ class _SplashScreenState extends State<SplashScreen>
     Future.delayed(Duration(milliseconds: 3435), () {
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => widget.child!),
+        MaterialPageRoute(builder: (context) => LoginPage()),
         (route) => false,
       );
     });

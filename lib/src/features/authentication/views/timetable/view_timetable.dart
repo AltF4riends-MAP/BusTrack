@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:bustrack/src/features/authentication/controllers/readAllController.dart';
 import 'package:bustrack/src/features/authentication/models/bus.dart';
@@ -37,7 +39,7 @@ class _ViewTimetableState extends State<ViewTimetable> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text(
-          "Add Timetable",
+          "View Timetable",
           style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1)),
         ),
         backgroundColor: Color.fromRGBO(104, 1, 1, 1),
@@ -75,51 +77,92 @@ class _ViewTimetableState extends State<ViewTimetable> {
                   ),
                   Center(
                     child: Padding(
-                      padding: const EdgeInsets.all(22.0),
+                      padding: const EdgeInsets.all(10.0),
                       child: Container(
-                        width: 320,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          color: Color.fromRGBO(255, 255, 255, 1),
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: Color.fromARGB(255, 0, 0, 0),
-                            width: 2,
+                          width: 350,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            color: Color.fromRGBO(255, 255, 255, 1),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: Color.fromARGB(255, 0, 0, 0),
+                              width: 2,
+                            ),
                           ),
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                busList.isNotEmpty
-                                    ? busList[0].busName
-                                    : 'No data',
-                                style: TextStyle(),
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                routeList.isNotEmpty
-                                    ? routeList[0].routeName
-                                    : 'No data',
-                                style: TextStyle(),
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                stopList.isNotEmpty
-                                    ? stopList[0].stopName
-                                    : 'No data',
-                                style: TextStyle(),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                          child: ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            itemCount: busList.length,
+                            itemBuilder: (context, index) {
+                              final bus = busList[index];
+                              return ListTile(
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(Icons
+                                              .directions_bus_filled_rounded),
+                                          onPressed: () async {},
+                                        ),
+                                        Text(
+                                          bus.busName,
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        SizedBox(
+                                          width: 100,
+                                        ),
+                                        IconButton(
+                                          icon:
+                                              const Icon(Icons.remove_red_eye),
+                                          onPressed: () async {},
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(
+                                              Icons.punch_clock_outlined),
+                                          onPressed: () async {},
+                                        ),
+                                        Text(
+                                          bus.route.routeTimeStart +
+                                              " - " +
+                                              bus.route.routeTimeEnd,
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(
+                                              Icons.stop_circle_outlined),
+                                          onPressed: () async {},
+                                        ),
+                                        Text(
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 4,
+                                          softWrap: true,
+                                          bus.route.stop[0].stopName +
+                                              " to\n " +
+                                              bus.route.stop.last.stopName,
+                                          style: TextStyle(
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          )),
                     ),
                   ),
                 ],
@@ -136,6 +179,15 @@ class _ViewTimetableState extends State<ViewTimetable> {
     busList = await read.getAllBus();
     routeList = await read.getAllRoute();
     stopList = await read.getAllStop();
+    for (Routes route in routeList) {
+      route.setStop(stopList);
+      print(route.stop);
+    }
+
+    for (Bus bus in busList) {
+      bus.setRoute(routeList);
+      print(bus.route.stop[0].stopName);
+    }
 
     if (mounted) {
       setState(() {});

@@ -245,7 +245,7 @@ class _ManageProfileState extends State<ManageProfile> {
             label: _isLoggedIn ? 'Logout' : 'Logged Out',
           ),
         ],
-        currentIndex: 0,
+        currentIndex: 1,
         selectedItemColor: Colors.red,
         unselectedItemColor: Colors.grey,
       ),

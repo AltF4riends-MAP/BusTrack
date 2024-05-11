@@ -4,3 +4,4 @@ const String signUpRoute = '/signUp';
 const String forgotRoute = '/forgotPassword';
 const String manageProfileRoute = '/manageProfile';
 const String viewTimetableRoute = '/viewTimetable';
+const String splashScreenRoute = '/splash';
