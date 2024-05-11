@@ -5,3 +5,4 @@ const String forgotRoute = '/forgotPassword';
 const String manageProfileRoute = '/manageProfile';
 const String viewTimetableRoute = '/viewTimetable';
 const String splashScreenRoute = '/splash';
+const String AddBusRoute = '/addform';

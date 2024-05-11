@@ -1,4 +1,5 @@
 import 'package:bustrack/src/features/authentication/controllers/navigations.dart';
+import 'package:bustrack/src/features/authentication/views/buspages/addform.dart';
 import 'package:bustrack/src/features/authentication/views/forgotpassword/forgetPassword.dart';
 import 'package:bustrack/src/features/authentication/views/homepage/homepage_widget.dart';
 import 'package:bustrack/src/features/authentication/views/login/login_widget.dart';
@@ -42,6 +43,11 @@ Route<dynamic>? createRoute(settings) {
     case splashScreenRoute:
       return MaterialPageRoute(
         builder: (context) => (SplashScreen()),
+      );
+
+    case AddBusRoute:
+      return MaterialPageRoute(
+        builder: (context) => (AddBus()),
       );
   }
   return null;

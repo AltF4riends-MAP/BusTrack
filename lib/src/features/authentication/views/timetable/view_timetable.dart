@@ -16,7 +16,7 @@ class ViewTimetable extends StatefulWidget {
 }
 
 class _ViewTimetableState extends State<ViewTimetable> {
-  List<Bus> busList = [];
+  List<BusModel> busList = [];
   List<Routes> routeList = [];
   List<Stop> stopList = [];
   late GoogleMapController mapController;
@@ -43,6 +43,19 @@ class _ViewTimetableState extends State<ViewTimetable> {
           style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1)),
         ),
         backgroundColor: Color.fromRGBO(104, 1, 1, 1),
+        actions: [
+          // Add bus button
+          IconButton(
+            icon: const Text(
+              "Add Bus",
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+            onPressed: () async {
+              Navigator.pushReplacementNamed(context, '/addform');
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -129,9 +142,9 @@ class _ViewTimetableState extends State<ViewTimetable> {
                                           onPressed: () async {},
                                         ),
                                         Text(
-                                          bus.route.routeTimeStart +
-                                              " - " +
-                                              bus.route.routeTimeEnd,
+                                          bus.routeTimeStart +
+                                              "-" +
+                                              bus.routeTimeEnd,
                                           style: TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.bold),
@@ -149,9 +162,9 @@ class _ViewTimetableState extends State<ViewTimetable> {
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 4,
                                           softWrap: true,
-                                          bus.route.stop[0].stopName +
-                                              " to\n " +
-                                              bus.route.stop.last.stopName,
+                                          bus.routeTimeStart +
+                                              "-" +
+                                              bus.routeTimeEnd,
                                           style: TextStyle(
                                               fontSize: 10,
                                               fontWeight: FontWeight.bold),
@@ -184,7 +197,7 @@ class _ViewTimetableState extends State<ViewTimetable> {
       print(route.stop);
     }
 
-    for (Bus bus in busList) {
+    for (BusModel bus in busList) {
       bus.setRoute(routeList);
       print(bus.route.stop[0].stopName);
     }

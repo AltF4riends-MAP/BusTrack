@@ -4,11 +4,11 @@ import "package:bustrack/src/features/authentication/models/stop.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
 
 class ReadAllController {
-  List<Bus> busList = [];
+  List<BusModel> busList = [];
   List<Routes> routeList = [];
   List<Stop> stopList = [];
 
-  Future<List<Bus>> getAllBus() async {
+  Future<List<BusModel>> getAllBus() async {
     final CollectionReference busCollection =
         FirebaseFirestore.instance.collection('Bus');
 
@@ -20,13 +20,15 @@ class ReadAllController {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
         // Map each document to a Bus object
-        Bus bus = new Bus(
+        BusModel bus = new BusModel(
           doc.id,
           data['busName'] ?? '',
           data['busDescription'] ?? '',
           data['busPlateNum'] ?? '',
           data['busRoute'] ?? '',
           data['busStatus'] ?? '',
+          data['routeTimeEnd'] ?? '',
+          data['routeTimeStart'] ?? '',
         );
         busList.add(bus); // Add the Bus object to the list
         print(bus.busName);
