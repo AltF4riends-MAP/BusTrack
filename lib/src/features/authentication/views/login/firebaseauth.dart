@@ -48,4 +48,6 @@ class FirebaseAuthService {
         print("Failed to send password reset email: ${e.message}");
       }
     }
+
+    
 }
