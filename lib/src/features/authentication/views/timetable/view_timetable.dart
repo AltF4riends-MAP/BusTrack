@@ -1,6 +1,7 @@
-import 'package:flutter/cupertino.dart';
+import 'package:bustrack/src/features/authentication/controllers/navigations.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:bustrack/src/features/authentication/controllers/readAllController.dart';
 import 'package:bustrack/src/features/authentication/models/bus.dart';
@@ -36,142 +37,173 @@ class _ViewTimetableState extends State<ViewTimetable> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text(
-          "View Timetable",
-          style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1)),
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: const Text(
+            "View Timetable",
+            style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1)),
+          ),
+          backgroundColor: Color.fromRGBO(104, 1, 1, 1),
         ),
-        backgroundColor: Color.fromRGBO(104, 1, 1, 1),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            flex: 2,
-            child: Container(
-              height: 500,
-              child: GoogleMap(
-                onMapCreated: _onMapCreated,
-                initialCameraPosition: CameraPosition(
-                  target: _center,
-                  zoom: 17.0,
+        body: Column(
+          children: [
+            Expanded(
+              flex: 2,
+              child: Container(
+                height: 500,
+                child: GoogleMap(
+                  onMapCreated: _onMapCreated,
+                  initialCameraPosition: CameraPosition(
+                    target: _center,
+                    zoom: 17.0,
+                  ),
                 ),
               ),
             ),
-          ),
-          Expanded(
-            flex: 3,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Stack(
-                children: <Widget>[
-                  Container(
-                    width: 820,
-                    height: 1100,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage("assets/images/background_mp.jpg"),
-                        fit: BoxFit.cover,
+            Expanded(
+              flex: 3,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Stack(
+                  children: <Widget>[
+                    Container(
+                      width: 820,
+                      height: 1100,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("assets/images/background_mp.jpg"),
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
-                  ),
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Container(
-                          width: 350,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            color: Color.fromRGBO(255, 255, 255, 1),
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: Color.fromARGB(255, 0, 0, 0),
-                              width: 2,
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Container(
+                            width: 350,
+                            height: 1000,
+                            decoration: BoxDecoration(
+                              color: Color.fromRGBO(255, 255, 255, 1),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: Color.fromARGB(255, 0, 0, 0),
+                                width: 2,
+                              ),
                             ),
-                          ),
-                          child: ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            itemCount: busList.length,
-                            itemBuilder: (context, index) {
-                              final bus = busList[index];
-                              return ListTile(
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        IconButton(
-                                          icon: const Icon(Icons
-                                              .directions_bus_filled_rounded),
-                                          onPressed: () async {},
-                                        ),
-                                        Text(
-                                          bus.busName,
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        SizedBox(
-                                          width: 100,
-                                        ),
-                                        IconButton(
-                                          icon:
-                                              const Icon(Icons.remove_red_eye),
-                                          onPressed: () async {},
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        IconButton(
-                                          icon: const Icon(
-                                              Icons.punch_clock_outlined),
-                                          onPressed: () async {},
-                                        ),
-                                        Text(
-                                          bus.route.routeTimeStart +
-                                              " - " +
-                                              bus.route.routeTimeEnd,
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        IconButton(
-                                          icon: const Icon(
-                                              Icons.stop_circle_outlined),
-                                          onPressed: () async {},
-                                        ),
-                                        Text(
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 4,
-                                          softWrap: true,
-                                          bus.route.stop[0].stopName +
-                                              " to\n " +
-                                              bus.route.stop.last.stopName,
-                                          style: TextStyle(
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                          )),
+                            child: ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              itemCount: busList.length,
+                              itemBuilder: (context, index) {
+                                final bus = busList[index];
+                                return ListTile(
+                                  subtitle: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          IconButton(
+                                            icon: const Icon(Icons
+                                                .directions_bus_filled_rounded),
+                                            onPressed: () async {},
+                                          ),
+                                          Text(
+                                            bus.busName,
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          SizedBox(
+                                            width: 100,
+                                          ),
+                                          IconButton(
+                                            icon: const Icon(
+                                                Icons.remove_red_eye),
+                                            onPressed: () async {},
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          IconButton(
+                                            icon: const Icon(
+                                                Icons.punch_clock_outlined),
+                                            onPressed: () async {},
+                                          ),
+                                          Text(
+                                            bus.route.routeTimeStart +
+                                                " - " +
+                                                bus.route.routeTimeEnd,
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          IconButton(
+                                            icon: const Icon(
+                                                Icons.stop_circle_outlined),
+                                            onPressed: () async {},
+                                          ),
+                                          Text(
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 4,
+                                            softWrap: true,
+                                            bus.route.stop[0].stopName +
+                                                " to\n " +
+                                                bus.route.stop.last.stopName,
+                                            style: TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            )),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ),
-        ],
-      ),
-    );
+            )
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+            items: <BottomNavigationBarItem>[
+              const BottomNavigationBarItem(
+                icon: Icon(Icons.add),
+                label: 'Add Bus',
+              ),
+              const BottomNavigationBarItem(
+                icon: Icon(Icons.settings),
+                label: 'Manage Timetable',
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.logout), label: 'LogOut'),
+            ],
+            currentIndex: 0,
+            selectedItemColor: Colors.red,
+            unselectedItemColor: Colors.grey,
+            onTap: (index) {
+              switch (index) {
+                case 0:
+                  Navigator.pushNamed(
+                      context, addTimetableRoute); // Navigate to home page
+                  break;
+                case 1:
+                  Navigator.pushNamed(context, manageProfileRoute);
+                  break;
+                case 2:
+                  Navigator.pushNamed(context, loginRoute);
+
+                  break;
+              }
+            }));
   }
 
   Future<void> fetchData() async {
