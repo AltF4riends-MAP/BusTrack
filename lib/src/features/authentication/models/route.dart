@@ -11,11 +11,11 @@ class Routes {
   List<Stop> stop = [];
 
   Routes(this.id, this.routeName, this.routeStatus, this.routeStops,
-      this.routeTimeEnd, this.routeTimeStart);
+      this.routeTimeStart, this.routeTimeEnd);
 
   void setStop(List<Stop> stopList) {
-    for (Stop stops in stopList) {
-      for (String routes in routeStops) {
+    for (String routes in routeStops) {
+      for (Stop stops in stopList) {
         if (stops.id == routes) {
           stop.add(stops);
           print(stops.stopName);

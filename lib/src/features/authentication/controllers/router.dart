@@ -6,6 +6,7 @@ import 'package:bustrack/src/features/authentication/views/login/splashscreen_wi
 import 'package:bustrack/src/features/authentication/views/manageprofile/manage_profile.dart';
 import 'package:bustrack/src/features/authentication/views/register/register_form_widget.dart';
 import 'package:bustrack/src/features/authentication/views/timetable/add_timetable.dart';
+import 'package:bustrack/src/features/authentication/views/timetable/manage_timetable.dart';
 import 'package:bustrack/src/features/authentication/views/timetable/view_timetable.dart';
 import 'package:flutter/material.dart';
 
@@ -48,6 +49,11 @@ Route<dynamic>? createRoute(settings) {
     case addTimetableRoute:
       return MaterialPageRoute(
         builder: (context) => (AddBus()),
+      );
+
+    case manageTimetableRoute:
+      return MaterialPageRoute(
+        builder: (context) => (ManageBus(settings.arguments)),
       );
   }
   return null;

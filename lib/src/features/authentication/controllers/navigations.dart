@@ -6,3 +6,4 @@ const String manageProfileRoute = '/manageProfile';
 const String viewTimetableRoute = '/viewTimetable';
 const String splashScreenRoute = '/splash';
 const String addTimetableRoute = '/addTimetable';
+const String manageTimetableRoute = '/manageTimetable';

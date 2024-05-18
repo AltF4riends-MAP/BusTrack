@@ -10,14 +10,15 @@ import 'package:bustrack/src/features/authentication/views/login/formcontainer.d
 import 'package:bustrack/src/features/authentication/models/stop.dart';
 import 'package:bustrack/src/features/authentication/models/route.dart';
 
-class AddBus extends StatefulWidget {
-  const AddBus({Key? key}) : super(key: key);
+class ManageBus extends StatefulWidget {
+  final Bus _data;
+  ManageBus(this._data);
 
   @override
-  State<AddBus> createState() => _AddBusState();
+  State<ManageBus> createState() => _ManageBusState();
 }
 
-class _AddBusState extends State<AddBus> {
+class _ManageBusState extends State<ManageBus> {
   List<Stop> _selectedStops = [];
   List<Bus> _busList = [];
   List<Routes> _routeList = [];
@@ -28,13 +29,12 @@ class _AddBusState extends State<AddBus> {
   final busName = TextEditingController();
   final busDescription = TextEditingController();
   final busPlateNum = TextEditingController();
-
   final busStatus = TextEditingController();
   final routeName = TextEditingController();
   final routeStatus = TextEditingController();
-  final routeStop = TextEditingController();
   final routeTimeStart = TextEditingController();
   final routeTimeEnd = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -43,7 +43,21 @@ class _AddBusState extends State<AddBus> {
 
   @override
   void dispose() {
+    busName.dispose();
+    busDescription.dispose();
+    busPlateNum.dispose();
+    busStatus.dispose();
+    routeName.dispose();
+    routeStatus.dispose();
+    routeTimeStart.dispose();
+    routeTimeEnd.dispose();
     super.dispose();
+  }
+
+  void _handleStopsChanged(List<Stop> updatedStops) {
+    setState(() {
+      _selectedStops = updatedStops;
+    });
   }
 
   @override
@@ -51,9 +65,7 @@ class _AddBusState extends State<AddBus> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text(
-            style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1)),
-            "Add Bus"),
+        title: const Text("Manage Bus"),
         backgroundColor: const Color.fromRGBO(124, 0, 0, 1),
       ),
       body: SingleChildScrollView(
@@ -75,7 +87,7 @@ class _AddBusState extends State<AddBus> {
             Center(
               child: Container(
                 width: 700,
-                height: 1200,
+                height: 1500,
                 decoration: BoxDecoration(
                   color: Colors.white,
                 ),
@@ -85,7 +97,7 @@ class _AddBusState extends State<AddBus> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
-                        "Add Bus",
+                        "Manage Bus",
                         style: TextStyle(
                           fontSize: 27,
                           fontWeight: FontWeight.bold,
@@ -129,14 +141,9 @@ class _AddBusState extends State<AddBus> {
                       ),
                       const SizedBox(height: 30),
                       DropdownChecklist(
-                        stopList: _stopList, // Pass your list of stops here
-                        selectedStops: _selectedStops,
-                        onChanged: (selectedStops) {
-                          setState(() {
-                            _selectedStops = selectedStops;
-                          });
-                        },
-                      ),
+                          stopList: _stopList,
+                          selectedStops: _selectedStops,
+                          onChanged: _handleStopsChanged),
                       const SizedBox(height: 30),
                       FormContainerWidget(
                         controller: routeTimeStart,
@@ -152,19 +159,10 @@ class _AddBusState extends State<AddBus> {
                       const SizedBox(height: 30),
                       GestureDetector(
                         onTap: () async {
-                          print("****************" +
-                              busName.text +
-                              "*********************************");
                           List<String> stopID = [];
                           for (Stop stopp in _selectedStops) {
                             stopID.add(stopp.id);
-                          }
-
-                          Map<String, String> stopsMap = {};
-
-                          // Convert the list of stopIds into a map with index as key
-                          for (int i = 0; i < stopID.length; i++) {
-                            stopsMap[i.toString()] = stopID[i];
+                            print("idddddddddddddddddddd:" + stopp.id);
                           }
 
                           List<String> stopIDs =
@@ -175,51 +173,56 @@ class _AddBusState extends State<AddBus> {
                             "routeStatus": routeStatus.text,
                             "routeTimeStart": routeTimeStart.text,
                             "routeTimeEnd": routeTimeEnd.text,
-                            "routeStops": {}
-                          };
-                          var busInformation = <String, String>{
-                            "busName": busName.text,
-                            "busStatus": busStatus.text.toLowerCase(),
-                            "busPlateNum": busPlateNum.text,
-                            "busDescription": busDescription.text,
+                            "routeStops": {}, // Initialize an empty map
                           };
 
+                          // Populate the routeStops map with incremental integers as keys and Firestore IDs as values
                           for (int i = 0; i < stopIDs.length; i++) {
                             routeInformation['routeStops'][i.toString()] =
                                 stopIDs[i];
                           }
 
-                          final newRouteRef = dBase.collection("Route").doc();
+                          final newRouteRef = dBase
+                              .collection("Route")
+                              .doc(widget._data.route.id);
 
-                          newRouteRef.set(routeInformation).then((value) async {
+                          newRouteRef
+                              .update(routeInformation)
+                              .then((value) async {
                             String documentId = newRouteRef.id;
-                            busInformation.addAll({
+                            var busInformation = <String, String>{
+                              "busName": busName.text,
+                              "busStatus": busStatus.text.toLowerCase(),
+                              "busPlateNum": busPlateNum.text,
+                              "busDescription": busDescription.text,
                               "busRoute": documentId,
-                            });
+                            };
+
                             dBase
                                 .collection("Bus")
-                                .doc()
-                                .set(busInformation)
+                                .doc(widget._data.id)
+                                .update(busInformation)
                                 .then((value) {
                               print(busInformation);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      'Bus information updated successfully!'),
+                                ),
+                              );
                             });
 
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content:
-                                    Text('Bus information added successfully!'),
-                              ),
-                            );
+                            busName.clear();
+                            busDescription.clear();
+                            busPlateNum.clear();
+                            busStatus.clear();
+                            routeName.clear();
+                            routeTimeStart.clear();
+                            routeTimeEnd.clear();
+                            Navigator.pushNamed(context, viewTimetableRoute);
+                          }).catchError((error) {
+                            print("Failed to update route: $error");
                           });
-
-                          busName.clear();
-                          busDescription.clear();
-                          busPlateNum.clear();
-                          busStatus.clear();
-                          routeName.clear();
-                          routeTimeStart.clear();
-                          routeTimeEnd.clear();
-                          Navigator.pushNamed(context, viewTimetableRoute);
                         },
                         child: Container(
                           width: double.infinity,
@@ -233,7 +236,7 @@ class _AddBusState extends State<AddBus> {
                                 ? const CircularProgressIndicator(
                                     color: Colors.white)
                                 : const Text(
-                                    "Add",
+                                    "Update",
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
@@ -283,7 +286,6 @@ class _AddBusState extends State<AddBus> {
     _stopList = await read.getAllStop();
     for (Routes route in _routeList) {
       route.setStop(_stopList);
-      print(route.stop);
     }
 
     for (Bus bus in _busList) {
@@ -291,8 +293,17 @@ class _AddBusState extends State<AddBus> {
       print(bus.route.stop[0].stopName);
     }
 
-    if (mounted) {
-      setState(() {});
-    }
+    busName.text = widget._data.busName;
+    busDescription.text = widget._data.busDescription;
+    busPlateNum.text = widget._data.busPlateNum;
+    busStatus.text = widget._data.busStatus;
+    routeName.text = widget._data.route.routeName;
+    routeStatus.text = widget._data.route.routeStatus;
+    routeTimeStart.text = widget._data.route.routeTimeStart;
+    routeTimeEnd.text = widget._data.route.routeTimeEnd;
+
+    setState(() {
+      _selectedStops = List.from(widget._data.route.stop);
+    });
   }
 }

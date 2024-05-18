@@ -17,6 +17,15 @@ class DropdownChecklist extends StatefulWidget {
 }
 
 class _DropdownChecklistState extends State<DropdownChecklist> {
+  late List<Stop> _currentSelectedStops;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the current selected stops with the passed selected stops
+    _currentSelectedStops = List.from(widget.selectedStops);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -27,24 +36,34 @@ class _DropdownChecklistState extends State<DropdownChecklist> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 10),
-        Wrap(
-          spacing: 10,
-          children: widget.stopList.map((stop) {
-            return FilterChip(
-              label: Text(stop.stopName),
-              selected: widget.selectedStops.contains(stop),
-              onSelected: (bool selected) {
-                setState(() {
-                  if (selected) {
-                    widget.selectedStops.add(stop);
-                  } else {
-                    widget.selectedStops.remove(stop);
-                  }
-                  widget.onChanged(widget.selectedStops);
-                });
-              },
-            );
-          }).toList(),
+        SizedBox(
+          height: 140,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Wrap(
+              spacing: 10,
+              children: widget.stopList.map((stop) {
+                return FilterChip(
+                  label: Text(stop.stopName),
+                  selected: _currentSelectedStops.contains(stop),
+                  onSelected: (bool selected) {
+                    setState(() {
+                      if (selected) {
+                        // If selected, move the stop to the beginning
+                        _currentSelectedStops.remove(stop);
+                        _currentSelectedStops.insert(0, stop);
+                        print(_currentSelectedStops[0].stopName);
+                      } else {
+                        // If unselected, remove it from the list
+                        _currentSelectedStops.remove(stop);
+                      }
+                      widget.onChanged(_currentSelectedStops);
+                    });
+                  },
+                );
+              }).toList(),
+            ),
+          ),
         ),
       ],
     );
