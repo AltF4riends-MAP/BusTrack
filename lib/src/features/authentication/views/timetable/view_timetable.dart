@@ -1,3 +1,5 @@
+import 'package:bustrack/src/features/authentication/controllers/navigations.dart';
+import 'package:bustrack/src/features/authentication/views/timetable/view_TableDetail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -20,6 +22,8 @@ class _ViewTimetableState extends State<ViewTimetable> {
   List<Routes> routeList = [];
   List<Stop> stopList = [];
   late GoogleMapController mapController;
+
+  TextEditingController textFieldController = TextEditingController(); //
 
   final LatLng _center = const LatLng(1.5754316068552179, 103.61788395334298);
 
@@ -80,7 +84,7 @@ class _ViewTimetableState extends State<ViewTimetable> {
                       padding: const EdgeInsets.all(10.0),
                       child: Container(
                           width: 350,
-                          height: 100,
+                          height: 300,
                           decoration: BoxDecoration(
                             color: Color.fromRGBO(255, 255, 255, 1),
                             borderRadius: BorderRadius.circular(10),
@@ -94,6 +98,7 @@ class _ViewTimetableState extends State<ViewTimetable> {
                             itemCount: busList.length,
                             itemBuilder: (context, index) {
                               final bus = busList[index];
+
                               return ListTile(
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,7 +122,9 @@ class _ViewTimetableState extends State<ViewTimetable> {
                                         IconButton(
                                           icon:
                                               const Icon(Icons.remove_red_eye),
-                                          onPressed: () async {},
+                                          onPressed: () async {
+                                            _sendData(context, bus);
+                                          },
                                         ),
                                       ],
                                     ),
@@ -192,5 +199,15 @@ class _ViewTimetableState extends State<ViewTimetable> {
     if (mounted) {
       setState(() {});
     }
+  }
+
+  void _sendData(BuildContext context, Bus currentBus) async {
+    // start the SecondScreen and wait for it to finish with a result
+    
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ViewTableDetail(currentBus: currentBus),
+        ));
   }
 }
