@@ -1,12 +1,10 @@
 import 'package:bustrack/src/features/authentication/controllers/readAllController.dart';
 import 'package:bustrack/src/features/authentication/models/bus.dart';
 import 'package:bustrack/src/features/authentication/views/timetable/dropDown.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:bustrack/src/features/authentication/controllers/navigations.dart';
 import 'package:bustrack/src/features/authentication/views/login/formcontainer.dart';
-
 import 'package:bustrack/src/features/authentication/models/stop.dart';
 import 'package:bustrack/src/features/authentication/models/route.dart';
 
@@ -22,7 +20,7 @@ class _ManageBusState extends State<ManageBus> {
   List<Stop> _selectedStops = [];
   List<Bus> _busList = [];
   List<Routes> _routeList = [];
-  List<Stop> _stopList = []; // Track selected stops
+  List<Stop> _stopList = [];
   final dBase = FirebaseFirestore.instance;
   bool _isSigning = false;
 
@@ -58,6 +56,55 @@ class _ManageBusState extends State<ManageBus> {
     setState(() {
       _selectedStops = updatedStops;
     });
+  }
+
+  bool validateFields() {
+    if (busName.text.isEmpty) {
+      showSnackBar('Bus Name cannot be empty');
+      return false;
+    }
+    if (busDescription.text.isEmpty) {
+      showSnackBar('Bus Description cannot be empty');
+      return false;
+    }
+    if (busStatus.text.isEmpty) {
+      showSnackBar('Bus Status cannot be empty');
+      return false;
+    }
+    if (routeName.text.isEmpty) {
+      showSnackBar('Route Name cannot be empty');
+      return false;
+    }
+    if (routeTimeStart.text.isEmpty) {
+      showSnackBar('Start Time cannot be empty');
+      return false;
+    }
+    if (routeTimeEnd.text.isEmpty) {
+      showSnackBar('End Time cannot be empty');
+      return false;
+    }
+    return true;
+  }
+
+  void showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
+  }
+
+  Future<String?> selectTime(BuildContext context) async {
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (pickedTime != null) {
+      return '${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}';
+    }
+
+    return null;
   }
 
   @override
@@ -104,36 +151,126 @@ class _ManageBusState extends State<ManageBus> {
                         ),
                       ),
                       const SizedBox(height: 30),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 7),
+                          ),
+                          Text(
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.left,
+                            "Bus Name",
+                          ),
+                        ],
+                      ),
                       FormContainerWidget(
                         controller: busName,
                         hintText: "Bus Name",
                         isPasswordField: false,
                       ),
                       const SizedBox(height: 30),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 7),
+                          ),
+                          Text(
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.left,
+                            "Bus Description",
+                          ),
+                        ],
+                      ),
                       FormContainerWidget(
                         controller: busDescription,
                         hintText: "Bus Description",
                         isPasswordField: false,
                       ),
                       const SizedBox(height: 30),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 7),
+                          ),
+                          Text(
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.left,
+                            "Bus Plate Num",
+                          ),
+                        ],
+                      ),
                       FormContainerWidget(
                         controller: busPlateNum,
                         hintText: "Plate Num",
                         isPasswordField: false,
                       ),
                       const SizedBox(height: 30),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 7),
+                          ),
+                          Text(
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.left,
+                            "Bus Status",
+                          ),
+                        ],
+                      ),
                       FormContainerWidget(
                         controller: busStatus,
                         hintText: "Status(active/inactive)",
                         isPasswordField: false,
                       ),
                       const SizedBox(height: 30),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 7),
+                          ),
+                          Text(
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.left,
+                            "Route Name",
+                          ),
+                        ],
+                      ),
                       FormContainerWidget(
                         controller: routeName,
                         hintText: "Route Name",
                         isPasswordField: false,
                       ),
                       const SizedBox(height: 30),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 7),
+                          ),
+                          Text(
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.left,
+                            "Route Status",
+                          ),
+                        ],
+                      ),
                       FormContainerWidget(
                         controller: routeStatus,
                         hintText: "Route Status(active/inactive)",
@@ -145,20 +282,76 @@ class _ManageBusState extends State<ManageBus> {
                           selectedStops: _selectedStops,
                           onChanged: _handleStopsChanged),
                       const SizedBox(height: 30),
-                      FormContainerWidget(
-                        controller: routeTimeStart,
-                        hintText: "Start Time",
-                        isPasswordField: false,
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 7),
+                          ),
+                          Text(
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.left,
+                            "Start Time",
+                          ),
+                        ],
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          final selectedTime = await selectTime(context);
+                          if (selectedTime != null) {
+                            setState(() {
+                              routeTimeStart.text = selectedTime;
+                            });
+                          }
+                        },
+                        child: AbsorbPointer(
+                          child: FormContainerWidget(
+                            controller: routeTimeStart,
+                            hintText: "Start Time",
+                            isPasswordField: false,
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 30),
-                      FormContainerWidget(
-                        controller: routeTimeEnd,
-                        hintText: "End Time",
-                        isPasswordField: false,
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 7),
+                          ),
+                          Text(
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.left,
+                            "End Time",
+                          ),
+                        ],
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          final selectedTime = await selectTime(context);
+                          if (selectedTime != null) {
+                            setState(() {
+                              routeTimeEnd.text = selectedTime;
+                            });
+                          }
+                        },
+                        child: AbsorbPointer(
+                          child: FormContainerWidget(
+                            controller: routeTimeEnd,
+                            hintText: "End Time",
+                            isPasswordField: false,
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 30),
                       GestureDetector(
                         onTap: () async {
+                          if (!validateFields()) return;
+
                           List<String> stopID = [];
                           for (Stop stopp in _selectedStops) {
                             stopID.add(stopp.id);
@@ -173,10 +366,9 @@ class _ManageBusState extends State<ManageBus> {
                             "routeStatus": routeStatus.text,
                             "routeTimeStart": routeTimeStart.text,
                             "routeTimeEnd": routeTimeEnd.text,
-                            "routeStops": {}, // Initialize an empty map
+                            "routeStops": {},
                           };
 
-                          // Populate the routeStops map with incremental integers as keys and Firestore IDs as values
                           for (int i = 0; i < stopIDs.length; i++) {
                             routeInformation['routeStops'][i.toString()] =
                                 stopIDs[i];

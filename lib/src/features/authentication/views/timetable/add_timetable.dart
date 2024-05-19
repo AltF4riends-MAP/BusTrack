@@ -32,9 +32,9 @@ class _AddBusState extends State<AddBus> {
   final busStatus = TextEditingController();
   final routeName = TextEditingController();
   final routeStatus = TextEditingController();
-  final routeStop = TextEditingController();
   final routeTimeStart = TextEditingController();
   final routeTimeEnd = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -46,14 +46,73 @@ class _AddBusState extends State<AddBus> {
     super.dispose();
   }
 
+  bool validateFields() {
+    if (busName.text.isEmpty) {
+      showSnackBar('Bus Name cannot be empty');
+      return false;
+    }
+    if (busDescription.text.isEmpty) {
+      showSnackBar('Bus Description cannot be empty');
+      return false;
+    }
+    if (busPlateNum.text.isEmpty) {
+      showSnackBar('Bus Plate Number cannot be empty');
+      return false;
+    }
+    if (busStatus.text.isEmpty) {
+      showSnackBar('Bus Status cannot be empty');
+      return false;
+    }
+
+    if (routeStatus.text.isEmpty) {
+      showSnackBar('Route Status cannot be empty');
+      return false;
+    }
+    if (routeTimeStart.text.isEmpty) {
+      showSnackBar('Start Time cannot be empty');
+      return false;
+    }
+    if (routeTimeEnd.text.isEmpty) {
+      showSnackBar('End Time cannot be empty');
+      return false;
+    }
+    if (_selectedStops.isEmpty) {
+      showSnackBar('Please select at least one stop');
+      return false;
+    }
+    return true;
+  }
+
+  void showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
+  }
+
+  Future<String?> selectTime(BuildContext context) async {
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (pickedTime != null) {
+      return '${pickedTime.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}';
+    }
+
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text(
-            style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1)),
-            "Add Bus"),
+          style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1)),
+          "Add Bus",
+        ),
         backgroundColor: const Color.fromRGBO(124, 0, 0, 1),
       ),
       body: SingleChildScrollView(
@@ -92,36 +151,126 @@ class _AddBusState extends State<AddBus> {
                         ),
                       ),
                       const SizedBox(height: 30),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 7),
+                          ),
+                          Text(
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.left,
+                            "Bus Name",
+                          ),
+                        ],
+                      ),
                       FormContainerWidget(
                         controller: busName,
                         hintText: "Bus Name",
                         isPasswordField: false,
                       ),
                       const SizedBox(height: 30),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 7),
+                          ),
+                          Text(
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.left,
+                            "Bus Description",
+                          ),
+                        ],
+                      ),
                       FormContainerWidget(
                         controller: busDescription,
                         hintText: "Bus Description",
                         isPasswordField: false,
                       ),
                       const SizedBox(height: 30),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 7),
+                          ),
+                          Text(
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.left,
+                            "Bus Plate Num",
+                          ),
+                        ],
+                      ),
                       FormContainerWidget(
                         controller: busPlateNum,
                         hintText: "Plate Num",
                         isPasswordField: false,
                       ),
                       const SizedBox(height: 30),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 7),
+                          ),
+                          Text(
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.left,
+                            "Bus Status",
+                          ),
+                        ],
+                      ),
                       FormContainerWidget(
                         controller: busStatus,
                         hintText: "Status(active/inactive)",
                         isPasswordField: false,
                       ),
                       const SizedBox(height: 30),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 7),
+                          ),
+                          Text(
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.left,
+                            "Route Name",
+                          ),
+                        ],
+                      ),
                       FormContainerWidget(
                         controller: routeName,
                         hintText: "Route Name",
                         isPasswordField: false,
                       ),
                       const SizedBox(height: 30),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 7),
+                          ),
+                          Text(
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.left,
+                            "Route Status",
+                          ),
+                        ],
+                      ),
                       FormContainerWidget(
                         controller: routeStatus,
                         hintText: "Route Status(active/inactive)",
@@ -129,7 +278,7 @@ class _AddBusState extends State<AddBus> {
                       ),
                       const SizedBox(height: 30),
                       DropdownChecklist(
-                        stopList: _stopList, // Pass your list of stops here
+                        stopList: _stopList,
                         selectedStops: _selectedStops,
                         onChanged: (selectedStops) {
                           setState(() {
@@ -138,20 +287,79 @@ class _AddBusState extends State<AddBus> {
                         },
                       ),
                       const SizedBox(height: 30),
-                      FormContainerWidget(
-                        controller: routeTimeStart,
-                        hintText: "Start Time",
-                        isPasswordField: false,
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 7),
+                          ),
+                          Text(
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.left,
+                            "Start Time",
+                          ),
+                        ],
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          final selectedTime = await selectTime(context);
+                          if (selectedTime != null) {
+                            setState(() {
+                              routeTimeStart.text = selectedTime;
+                            });
+                          }
+                        },
+                        child: AbsorbPointer(
+                          child: FormContainerWidget(
+                            controller: routeTimeStart,
+                            hintText: "Start Time",
+                            isPasswordField: false,
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 30),
-                      FormContainerWidget(
-                        controller: routeTimeEnd,
-                        hintText: "End Time",
-                        isPasswordField: false,
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 7),
+                          ),
+                          Text(
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.left,
+                            "End Time",
+                          ),
+                        ],
+                      ),
+                      GestureDetector(
+                        onTap: () async {
+                          final selectedTime = await selectTime(context);
+                          if (selectedTime != null) {
+                            setState(() {
+                              routeTimeEnd.text = selectedTime;
+                            });
+                          }
+                        },
+                        child: AbsorbPointer(
+                          child: FormContainerWidget(
+                            controller: routeTimeEnd,
+                            hintText: "End Time",
+                            isPasswordField: false,
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 30),
                       GestureDetector(
                         onTap: () async {
+                          if (!validateFields()) {
+                            return; // If validation fails, stop further execution
+                          }
+
+                          // Your existing code to add bus and route information
                           print("****************" +
                               busName.text +
                               "*********************************");
@@ -231,7 +439,8 @@ class _AddBusState extends State<AddBus> {
                           child: Center(
                             child: _isSigning
                                 ? const CircularProgressIndicator(
-                                    color: Colors.white)
+                                    color: Colors.white,
+                                  )
                                 : const Text(
                                     "Add",
                                     style: TextStyle(
