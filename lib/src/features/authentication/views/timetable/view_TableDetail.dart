@@ -6,6 +6,7 @@ import 'package:bustrack/src/features/authentication/controllers/readAllControll
 import 'package:bustrack/src/features/authentication/models/bus.dart';
 import 'package:bustrack/src/features/authentication/models/stop.dart';
 import 'package:bustrack/src/features/authentication/models/route.dart';
+import 'package:intl/intl.dart';
 
 class ViewTableDetail extends StatefulWidget {
   final Bus currentBus;
@@ -29,8 +30,36 @@ class _ViewDetailTableState extends State<ViewTableDetail> {
   List<Routes> routeList = [];
   List<Stop> stopList = [];
 
+  DateTime startS = DateTime.parse('2023-05-10 07:15:00');
+  DateTime endS = DateTime.parse('2024-05-10 18:15:00');
+
+  late var startTimeForm = DateFormat('kk:mm').format(startS);
+  late var endTimeForm = DateFormat('kk:mm').format(endS);
+
+  Duration duration = Duration(minutes: 30);
+
   DateTime now = DateTime.now();
   DateTime later = DateTime.now().add(const Duration(minutes: 30));
+
+  late DateTime startSNew = startS;
+  late DateTime startSOld = startSNew;
+
+  printTime()
+  {
+    for(var i = 0; i < 30; i++) {
+      startSOld = startSNew;
+      startSNew = startSNew.add(duration);
+
+      late var oldTimeForm = DateFormat('kk:mm').format(startSOld);
+      late var startTimeForm = DateFormat('kk:mm').format(startSNew);
+      late var endTimeForm = DateFormat('kk:mm').format(endS);
+
+      Text(oldTimeForm + " to " + startTimeForm);
+
+      if (startTimeForm == endTimeForm){break;}
+                      
+      }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -141,7 +170,22 @@ class _ViewDetailTableState extends State<ViewTableDetail> {
             child: Padding(
               padding: EdgeInsets.all(10),
               child: Container(
-                child: SizedBox(),
+                width: 350,
+                height: 350,
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(255, 255, 255, 1),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: Color.fromARGB(255, 0, 0, 0),
+                    width: 2,
+                    ),
+                  ),
+                child: ListView(
+                  children: [
+
+                    
+
+                ],),
               ),
             ),
           ),

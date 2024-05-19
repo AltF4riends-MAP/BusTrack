@@ -23,19 +23,23 @@ class _TestingState extends State<Testing> {
   Duration duration = Duration(minutes: 30);
 
   late DateTime startSNew = startS;
+  late DateTime startSOld = startSNew;
 
   printS() {
-    for (var i = 0; i < 25; i++) {
-
+    while (startTimeForm != endTimeForm) {
+      startSOld = startSNew;
       startSNew = startSNew.add(duration);
 
+      late var oldTimeForm = DateFormat('kk:mm').format(startSOld);
       late var startTimeForm = DateFormat('kk:mm').format(startSNew);
       late var endTimeForm = DateFormat('kk:mm').format(endS);
 
+      log(oldTimeForm);
       log(startTimeForm);
 
       if (startTimeForm == endTimeForm) {
-        log("Time Matched at iteration" + i.toString());
+        log("Time Matched");
+        break;
       }
     }
   }

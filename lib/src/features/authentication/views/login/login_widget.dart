@@ -160,31 +160,31 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ],
                     ),
-                    //
-                    const SizedBox(height: 5),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text("Don't have any Friends?"),
-                        const SizedBox(width: 5),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => Testing(),
-                                ));
-                          },
-                          child: const Text(
-                            "Click Here",
-                            style: TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ],
-                    ),
-                    //
+                    
+                    // const SizedBox(height: 5),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: [
+                    //     const Text("Don't have any Friends?"),
+                    //     const SizedBox(width: 5),
+                    //     GestureDetector(
+                    //       onTap: () {
+                    //         Navigator.push(
+                    //             context,
+                    //             MaterialPageRoute(
+                    //               builder: (context) => Testing(),
+                    //             ));
+                    //       },
+                    //       child: const Text(
+                    //         "Click Here",
+                    //         style: TextStyle(
+                    //             color: Colors.blue,
+                    //             fontWeight: FontWeight.bold),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
+                    
                   ],
                 ),
               ),
