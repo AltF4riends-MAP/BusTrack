@@ -3,9 +3,6 @@ import 'package:bustrack/src/features/authentication/views/login/formcontainer.d
 import 'package:bustrack/src/features/authentication/views/login/login_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:flutter/material.dart';
 
@@ -33,7 +30,6 @@ class _ManageProfileState extends State<ManageProfile> {
   TextEditingController _lNameController = TextEditingController();
   bool _isEdit = false;
   bool _isLoggedIn = true;
-  File? _pickedImage;
 
   @override
   void dispose() {
@@ -113,23 +109,6 @@ class _ManageProfileState extends State<ManageProfile> {
               ),
               const SizedBox(
                 height: 30,
-              ),
-              GestureDetector(
-                onTap: _pickImage, // Call _pickImage function when tapped
-                child: CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Colors.grey,
-                  backgroundImage:
-                      _pickedImage != null ? FileImage(_pickedImage!) : null,
-                  child: _pickedImage == null
-                      ? Icon(Icons.person, size: 50, color: Colors.white)
-                      : null,
-                ),
-              ),
-              ElevatedButton(
-                onPressed:
-                    _pickImage, // Call _pickImage function when button is pressed
-                child: Text('Pick Profile Picture'),
               ),
               FormContainerWidget(
                 controller: _emailController,
@@ -313,84 +292,18 @@ class _ManageProfileState extends State<ManageProfile> {
       TextEditingController icNumController,
       TextEditingController fNameController,
       TextEditingController lNameController) async {
-    // Get the current user
-    final User? user = FirebaseAuth.instance.currentUser;
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
+    final current_user = user?.uid;
+    CollectionReference users = FirebaseFirestore.instance.collection('User');
 
-    // Check if the user is not null
-    if (user != null) {
-      CollectionReference users = FirebaseFirestore.instance.collection('User');
-
-      await users.doc(user.uid).update({
-        'email': emailController.text,
-        'password': passwordController.text,
-        'idNum': idNumController.text,
-        'icNum': icNumController.text,
-        'fName': fNameController.text,
-        'lName': lNameController.text,
-      });
-
-      // Prepare data to update in Firebase
-      Map<String, dynamic> userData = {
-        'email': emailController.text,
-        'password': passwordController.text,
-        'idNum': idNumController.text,
-        'icNum': icNumController.text,
-        'fName': fNameController.text,
-        'lName': lNameController.text,
-      };
-
-      // Add profile picture data if available
-      if (_pickedImage != null) {
-        // Here, you need to upload the image to a storage service like Firebase Storage
-        // Then, get the URL of the uploaded image and store it in Firebase Firestore
-        // For demonstration purpose, I'm assuming a field named 'profilePicture' in Firestore
-        String imageUrl = await uploadProfilePicture(_pickedImage!, user);
-        userData['profilePic'] = imageUrl;
-      }
-
-      // Update user data in Firestore
-      await users.doc(user.uid).update(userData);
-    }
-  }
-
-// Function to upload profile picture to Firebase Storage
-  Future<String> uploadProfilePicture(File imageFile, User user) async {
-    try {
-      // Get a reference to the Firebase Storage bucket
-      Reference storageRef = FirebaseStorage.instance
-          .ref()
-          .child("profilePic")
-          .child(user.uid) // Use user.uid instead of current_user.uid
-          .child("profile.jpg");
-
-      // Upload the image to Firebase Storage
-      UploadTask uploadTask = storageRef.putFile(imageFile);
-
-      // Wait for the upload to complete
-      TaskSnapshot snapshot = await uploadTask;
-
-      // Get the download URL of the uploaded image
-      String downloadUrl = await snapshot.ref.getDownloadURL();
-      print("done");
-
-      return downloadUrl; // Return the download URL
-    } catch (error) {
-      print("Error uploading profile picture: $error");
-      return ""; // Return empty string if there's an error
-    }
-  }
-
-  Future<void> _pickImage() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? pickedFile =
-        await _picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      // You can set the picked image to a variable or upload it to a storage service
-      // For now, let's just display it in a placeholder
-      setState(() {
-        _pickedImage = File(pickedFile.path);
-      });
-    }
+    await users.doc(current_user).update({
+      'email': emailController.text,
+      'password': passwordController.text,
+      'idNum': idNumController.text,
+      'icNum': icNumController.text,
+      'fName': fNameController.text,
+      'lName': lNameController.text,
+    });
   }
 }
