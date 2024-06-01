@@ -8,7 +8,7 @@ import 'package:bustrack/src/features/authentication/views/register/register_for
 import 'package:bustrack/src/features/authentication/views/timetable/add_timetable.dart';
 import 'package:bustrack/src/features/authentication/views/timetable/manage_timetable.dart';
 import 'package:bustrack/src/features/authentication/views/timetable/view_timetable.dart';
-import 'package:bustrack/src/features/authentication/views/Routes/view_routes.dart';
+import 'package:bustrack/src/features/authentication/views/Routes/viewroutes.dart';
 import 'package:flutter/material.dart';
 
 Route<dynamic>? createRoute(settings) {
@@ -38,7 +38,7 @@ Route<dynamic>? createRoute(settings) {
       );
     case viewRoutesPage:
       return MaterialPageRoute(
-        builder: (context) => ViewRoutes(),
+        builder: (context) => routePage(),
       );
 
     case forgotRoute:

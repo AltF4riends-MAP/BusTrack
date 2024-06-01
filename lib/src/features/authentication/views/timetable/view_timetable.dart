@@ -268,7 +268,7 @@ class _ViewTimetableState extends State<ViewTimetable> {
 
     for (Bus bus in busList) {
       bus.setRoute(routeList);
-      print(bus.route.stop[0].stopName);
+      //print(bus.route.stop[0].stopName);
     }
 
     if (mounted) {

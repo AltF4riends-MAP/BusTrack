@@ -45,6 +45,8 @@ dependencies:
   collection: ^1.18.0
   google_maps_flutter: ^2.6.1
   get: ^4.6.6
+  dio: ^4.0.0
+  flutter_polyline_points: ^2.0.0
 
 dev_dependencies:
   flutter_test:

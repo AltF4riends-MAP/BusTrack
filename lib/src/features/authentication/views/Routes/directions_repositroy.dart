@@ -1,0 +1,40 @@
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:bustrack/src/features/authentication/views/Routes/env.dart';
+import 'package:bustrack/src/features/authentication/views/Routes/directions_model.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+class DirectionsRepository {
+  static const String _baseUrl =
+      'https://maps.googleapis.com/maps/api/directions/json?';
+
+  final Dio _dio;
+
+  DirectionsRepository({required Dio dio}) : _dio = dio;
+
+  Future<Directions?> getDirections({
+    required LatLng origin,
+    required LatLng destination,
+  }) async {
+    final response = await _dio.get(
+      _baseUrl,
+      queryParameters: {
+        'origin': '${origin.latitude},${origin.longitude}',
+        'destination': '${destination.latitude},${destination.longitude}',
+        'key': googleAPIKey,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      try {
+        return Directions.fromMap(response.data);
+      } catch (e) {
+        debugPrint('Error parsing directions: $e');
+        return null;
+      }
+    } else {
+      debugPrint('Failed to fetch directions: ${response.statusMessage}');
+      return null;
+    }
+  }
+}
