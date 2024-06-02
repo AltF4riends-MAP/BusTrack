@@ -249,6 +249,13 @@ class _MapScreenState extends State<MapScreen> {
     if (selectedOriginStop == null) {
       setState(() {
         selectedOriginStop = stop;
+        final scaffoldMessenger = ScaffoldMessenger.of(context);
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(
+            content: Text('You have chosen the origin.'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
         _origin = Marker(
           markerId: const MarkerId('origin'),
           infoWindow: const InfoWindow(title: 'Origin'),
@@ -263,6 +270,13 @@ class _MapScreenState extends State<MapScreen> {
     } else if (selectedDestinationStop == null) {
       setState(() {
         selectedDestinationStop = stop;
+        final scaffoldMessenger = ScaffoldMessenger.of(context);
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(
+            content: Text('You have chosen the destination.'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
         _destination = Marker(
           markerId: const MarkerId('destination'),
           infoWindow: const InfoWindow(title: 'Destination'),
@@ -291,6 +305,15 @@ class _MapScreenState extends State<MapScreen> {
         _destination = null;
         _info = null;
       });
+    }
+    if ((selectedOriginStop != null) && selectedDestinationStop != null) {
+      final scaffoldMessenger = ScaffoldMessenger.of(context);
+      scaffoldMessenger.showSnackBar(
+        const SnackBar(
+          content: Text('You have chosen 2 stops.'),
+          duration: const Duration(seconds: 2),
+        ),
+      );
     }
   }
 
