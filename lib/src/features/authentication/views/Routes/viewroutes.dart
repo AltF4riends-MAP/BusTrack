@@ -1,3 +1,4 @@
+import 'package:bustrack/src/features/authentication/controllers/navigations.dart';
 import 'package:bustrack/src/features/authentication/models/stop.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -6,7 +7,7 @@ import 'directions_model.dart';
 import 'directions_repositroy.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class routePage extends StatelessWidget {
+class RoutePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -52,7 +53,8 @@ class _MapScreenState extends State<MapScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
-        title: const Text('Google Maps'),
+        title: const Text('Routes'),
+        backgroundColor: const Color.fromRGBO(124, 0, 0, 1),
         actions: [
           if (_origin != null)
             TextButton(
@@ -165,13 +167,19 @@ class _MapScreenState extends State<MapScreen> {
                               itemCount: stops.length,
                               itemBuilder: (context, index) {
                                 final stop = stops[index];
+                                final isSelected = stop == selectedOriginStop ||
+                                    stop == selectedDestinationStop;
+
                                 return Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: GestureDetector(
                                     onTap: () => _setStop(stop),
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        color: _getStopColor(stop),
+                                        color: isSelected
+                                            ? Colors.lightGreenAccent
+                                            : Colors
+                                                .white, // Change the base color here
                                         border: Border.all(color: Colors.grey),
                                         borderRadius: BorderRadius.circular(10),
                                         boxShadow: [
@@ -180,7 +188,7 @@ class _MapScreenState extends State<MapScreen> {
                                                 Colors.black.withOpacity(0.1),
                                             spreadRadius: 3,
                                             blurRadius: 5,
-                                            offset: Offset(0, 3),
+                                            offset: const Offset(0, 3),
                                           ),
                                         ],
                                       ),
@@ -204,11 +212,12 @@ class _MapScreenState extends State<MapScreen> {
                                                       fontSize: 10,
                                                       fontWeight:
                                                           FontWeight.bold,
+                                                      color: isSelected
+                                                          ? Colors.green
+                                                          : Colors.black,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                     ),
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    maxLines: 4,
-                                                    softWrap: true,
                                                   ),
                                                 ),
                                               ],
@@ -246,14 +255,38 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void _setStop(Stop stop) async {
+    await _googleMapController.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: LatLng(stop.posX, stop.posY),
+          zoom: 14.5,
+          tilt: 50.0,
+        ),
+      ),
+    );
+
     if (selectedOriginStop == null) {
       setState(() {
         selectedOriginStop = stop;
         final scaffoldMessenger = ScaffoldMessenger.of(context);
         scaffoldMessenger.showSnackBar(
-          const SnackBar(
-            content: Text('You have chosen the origin.'),
+          SnackBar(
+            content: RichText(
+              text: TextSpan(
+                children: [
+                  const TextSpan(text: "You have selected "),
+                  TextSpan(
+                    text: stop.stopName,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.italic),
+                  ),
+                  const TextSpan(text: " as your origin"),
+                ],
+              ),
+            ),
             duration: const Duration(seconds: 2),
+            backgroundColor: Colors.green,
           ),
         );
         _origin = Marker(
@@ -272,9 +305,23 @@ class _MapScreenState extends State<MapScreen> {
         selectedDestinationStop = stop;
         final scaffoldMessenger = ScaffoldMessenger.of(context);
         scaffoldMessenger.showSnackBar(
-          const SnackBar(
-            content: Text('You have chosen the destination.'),
+          SnackBar(
+            content: RichText(
+              text: TextSpan(
+                children: [
+                  const TextSpan(text: "You have selected "),
+                  TextSpan(
+                    text: stop.stopName,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.italic),
+                  ),
+                  const TextSpan(text: " as your destination"),
+                ],
+              ),
+            ),
             duration: const Duration(seconds: 2),
+            backgroundColor: Colors.blue,
           ),
         );
         _destination = Marker(
@@ -295,6 +342,27 @@ class _MapScreenState extends State<MapScreen> {
       setState(() {
         selectedOriginStop = stop;
         selectedDestinationStop = null;
+        final scaffoldMessenger = ScaffoldMessenger.of(context);
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: RichText(
+              text: TextSpan(
+                children: [
+                  const TextSpan(text: "You have selected "),
+                  TextSpan(
+                    text: stop.stopName,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontStyle: FontStyle.italic),
+                  ),
+                  const TextSpan(text: " as your origin"),
+                ],
+              ),
+            ),
+            duration: const Duration(seconds: 2),
+            backgroundColor: Colors.green,
+          ),
+        );
         _origin = Marker(
           markerId: const MarkerId('origin'),
           infoWindow: const InfoWindow(title: 'Origin'),
@@ -311,7 +379,7 @@ class _MapScreenState extends State<MapScreen> {
       scaffoldMessenger.showSnackBar(
         const SnackBar(
           content: Text('You have chosen 2 stops.'),
-          duration: const Duration(seconds: 2),
+          duration: Duration(seconds: 2),
         ),
       );
     }

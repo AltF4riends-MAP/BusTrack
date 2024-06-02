@@ -38,7 +38,7 @@ Route<dynamic>? createRoute(settings) {
       );
     case viewRoutesPage:
       return MaterialPageRoute(
-        builder: (context) => routePage(),
+        builder: (context) => RoutePage(),
       );
 
     case forgotRoute:
