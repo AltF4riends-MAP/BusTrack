@@ -10,6 +10,7 @@ import 'package:bustrack/src/features/authentication/views/timetable/manage_time
 import 'package:bustrack/src/features/authentication/views/timetable/view_TableDetail.dart';
 import 'package:bustrack/src/features/authentication/views/timetable/view_timetable.dart';
 
+import 'package:bustrack/src/features/authentication/views/Routes/viewroutes.dart';
 import 'package:flutter/material.dart';
 
 Route<dynamic>? createRoute(settings) {
@@ -36,6 +37,10 @@ Route<dynamic>? createRoute(settings) {
     case viewTimetableRoute:
       return MaterialPageRoute(
         builder: (context) => ViewTimetable(),
+      );
+    case viewRoutesPage:
+      return MaterialPageRoute(
+        builder: (context) => RoutePage(),
       );
 
     case forgotRoute:

@@ -1,6 +1,4 @@
 import 'package:bustrack/src/features/authentication/controllers/navigations.dart';
-import 'package:bustrack/src/features/authentication/views/timetable/view_TableDetail.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:bustrack/src/features/authentication/controllers/readAllController.dart';
@@ -8,14 +6,14 @@ import 'package:bustrack/src/features/authentication/models/bus.dart';
 import 'package:bustrack/src/features/authentication/models/stop.dart';
 import 'package:bustrack/src/features/authentication/models/route.dart';
 
-class ViewTimetable extends StatefulWidget {
-  const ViewTimetable({Key? key}) : super(key: key);
+class ViewRoutes extends StatefulWidget {
+  const ViewRoutes({Key? key}) : super(key: key);
 
   @override
-  State<ViewTimetable> createState() => _ViewTimetableState();
+  State<ViewRoutes> createState() => _ViewRoutesState();
 }
 
-class _ViewTimetableState extends State<ViewTimetable> {
+class _ViewRoutesState extends State<ViewRoutes> {
   List<Bus> busList = [];
   List<Routes> routeList = [];
   List<Stop> stopList = [];
@@ -39,7 +37,7 @@ class _ViewTimetableState extends State<ViewTimetable> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text(
-          "View Timetable",
+          "View Routes",
           style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1)),
         ),
         backgroundColor: Color.fromRGBO(104, 1, 1, 1),
@@ -227,35 +225,35 @@ class _ViewTimetableState extends State<ViewTimetable> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.view_agenda),
-            label: 'View Timetable',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.add),
-            label: 'Add Bus',
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.logout), label: 'LogOut'),
-        ],
-        currentIndex: 0,
-        selectedItemColor: Colors.red,
-        unselectedItemColor: Colors.grey,
-        onTap: (index) {
-          switch (index) {
-            case 0:
-              Navigator.pushNamed(context, viewTimetableRoute);
-              break;
-            case 1:
-              Navigator.pushNamed(context, addTimetableRoute);
-              break;
-            case 2:
-              Navigator.pushNamed(context, loginRoute);
-              break;
-          }
-        },
-      ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   items: <BottomNavigationBarItem>[
+      //     const BottomNavigationBarItem(
+      //       icon: Icon(Icons.view_agenda),
+      //       label: 'View Timetable',
+      //     ),
+      //     const BottomNavigationBarItem(
+      //       icon: Icon(Icons.add),
+      //       label: 'Add Bus',
+      //     ),
+      //     BottomNavigationBarItem(icon: Icon(Icons.logout), label: 'LogOut'),
+      //   ],
+      //   currentIndex: 0,
+      //   selectedItemColor: Colors.red,
+      //   unselectedItemColor: Colors.grey,
+      //   onTap: (index) {
+      //     switch (index) {
+      //       case 0:
+      //         Navigator.pushNamed(context, viewTimetableRoute);
+      //         break;
+      //       case 1:
+      //         Navigator.pushNamed(context, addTimetableRoute);
+      //         break;
+      //       case 2:
+      //         Navigator.pushNamed(context, loginRoute);
+      //         break;
+      //     }
+      //   },
+      // ),
     );
   }
 
@@ -270,7 +268,7 @@ class _ViewTimetableState extends State<ViewTimetable> {
 
     for (Bus bus in busList) {
       bus.setRoute(routeList);
-      //print(bus.route.stop[0].stopName);
+      print(bus.route.stop[0].stopName);
     }
 
     if (mounted) {
@@ -287,15 +285,5 @@ class _ViewTimetableState extends State<ViewTimetable> {
       _center = newCenter;
     });
     print(_center);
-
-    void _sendData(BuildContext context, Bus currentBus) async {
-      // start the SecondScreen and wait for it to finish with a result
-
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ViewTableDetail(currentBus: currentBus),
-          ));
-    }
   }
 }

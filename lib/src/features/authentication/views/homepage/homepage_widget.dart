@@ -106,7 +106,7 @@ class _HomePageState extends State<HomePage> {
                           "assets/images/homepage/RoutesIcon.png",
                           "Routes",
                           onTap: () {
-                            // Navigate to routes page
+                            Navigator.pushNamed(context, viewRoutesPage);
                           },
                         ),
                       ],
