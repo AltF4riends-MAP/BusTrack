@@ -1,4 +1,3 @@
-import 'package:bustrack/src/features/authentication/views/register/testing.dart';
 import 'package:flutter/material.dart';
 import 'package:bustrack/src/features/authentication/controllers/navigations.dart';
 import 'package:bustrack/src/features/authentication/views/login/firebaseauth.dart';

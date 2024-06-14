@@ -119,6 +119,14 @@ class _HomePageState extends State<HomePage> {
                         // Navigate to location page
                       },
                     ),
+                    const SizedBox(height: 20.0),
+                    _buildImageButton(
+                      "assets/images/homepage/BusIcon.png",
+                      "Location",
+                      onTap: () {
+                        Navigator.pushNamed(context, viewBusDriver);
+                      },
+                    ),
                   ],
                 ),
               ),

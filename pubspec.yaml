@@ -50,7 +50,11 @@ dependencies:
   firebase_storage: ^11.1.4
   dio: ^4.0.0
   flutter_polyline_points: ^2.0.0
+  geolocator: ^12.0.0
+  permission_handler: ^11.3.1
 
+  intl: any
+  change_app_package_name: ^1.2.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -83,6 +87,8 @@ flutter:
     - assets/images/homepage/TimetableIcon.png
     - assets/images/homepage/RoutesIcon.png
     - assets/images/homepage/LocationIcon.png
+    - assets/images/homepage/BusIcon.png
+    - assets/images/homepage/BusIcon2.png
     - assets/images/background_mp.jpg
   # To add assets to your application, add an assets section, like this:
   # assets:

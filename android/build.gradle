@@ -1,17 +1,23 @@
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
+// Root build.gradle file
 
 buildscript {
+    ext.kotlin_version = '2.0.0'  // Update to the latest version here
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
+        classpath "com.android.tools.build:gradle:7.1.3"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.google.gms:google-services:4.3.10'
         classpath "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
     }
 }
 
@@ -26,4 +32,3 @@ subprojects {
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
-
