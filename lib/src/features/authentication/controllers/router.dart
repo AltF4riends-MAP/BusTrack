@@ -69,7 +69,7 @@ Route<dynamic>? createRoute(settings) {
 
     case viewBusDriver:
       return MaterialPageRoute(
-        builder: (context) => (BusDriverPage()),
+        builder: (context) => (BusDriverPage(settings.arguments)),
       );
   }
   return null;

@@ -3,6 +3,7 @@ import 'package:bustrack/src/features/authentication/models/bus.dart';
 import 'package:bustrack/src/features/authentication/views/timetable/dropDown.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:bustrack/src/features/authentication/controllers/navigations.dart';
 import 'package:bustrack/src/features/authentication/views/login/formcontainer.dart';
@@ -34,6 +35,8 @@ class _AddBusState extends State<AddBus> {
   final routeStatus = TextEditingController();
   final routeTimeStart = TextEditingController();
   final routeTimeEnd = TextEditingController();
+
+  User? currentUser = null;
 
   @override
   void initState() {
@@ -356,10 +359,9 @@ class _AddBusState extends State<AddBus> {
                       GestureDetector(
                         onTap: () async {
                           if (!validateFields()) {
-                            return; // If validation fails, stop further execution
+                            return;
                           }
 
-                          // Your existing code to add bus and route information
                           print("****************" +
                               busName.text +
                               "*********************************");
@@ -370,7 +372,6 @@ class _AddBusState extends State<AddBus> {
 
                           Map<String, String> stopsMap = {};
 
-                          // Convert the list of stopIds into a map with index as key
                           for (int i = 0; i < stopID.length; i++) {
                             stopsMap[i.toString()] = stopID[i];
                           }
@@ -385,13 +386,19 @@ class _AddBusState extends State<AddBus> {
                             "routeTimeEnd": routeTimeEnd.text,
                             "routeStops": {}
                           };
-                          var busInformation = <String, String>{
+                          var busInformation = <String, dynamic>{
                             "busName": busName.text,
                             "busStatus": busStatus.text.toLowerCase(),
                             "busPlateNum": busPlateNum.text,
                             "busDescription": busDescription.text,
+                            "busDriveStatus": "STOP",
+                            "posX": 0.0001,
+                            "posY": 0.0001
                           };
 
+                          var UserInformation = <String, dynamic>{
+                            "busDriver": "",
+                          };
                           for (int i = 0; i < stopIDs.length; i++) {
                             routeInformation['routeStops'][i.toString()] =
                                 stopIDs[i];
@@ -404,12 +411,20 @@ class _AddBusState extends State<AddBus> {
                             busInformation.addAll({
                               "busRoute": documentId,
                             });
-                            dBase
-                                .collection("Bus")
-                                .doc()
+                            final newBusRefBase = dBase.collection("Bus").doc();
+
+                            newBusRefBase
                                 .set(busInformation)
-                                .then((value) {
+                                .then((value) async {
                               print(busInformation);
+                              UserInformation = <String, dynamic>{
+                                "busDriver": newBusRefBase.id,
+                              };
+
+                              final UserRef = dBase
+                                  .collection("User")
+                                  .doc(currentUser?.uid);
+                              UserRef.update(UserInformation);
                             });
 
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -498,6 +513,13 @@ class _AddBusState extends State<AddBus> {
     for (Bus bus in _busList) {
       bus.setRoute(_routeList);
       print(bus.route.stop[0].stopName);
+    }
+
+    final User? user = FirebaseAuth.instance.currentUser;
+
+    // Check if the user is not null
+    if (user != null) {
+      currentUser = user;
     }
 
     if (mounted) {

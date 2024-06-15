@@ -28,6 +28,9 @@ class _ManageBusState extends State<ManageBus> {
   final busDescription = TextEditingController();
   final busPlateNum = TextEditingController();
   final busStatus = TextEditingController();
+  final busDriveStatus = TextEditingController();
+  final posX = TextEditingController();
+  final posY = TextEditingController();
   final routeName = TextEditingController();
   final routeStatus = TextEditingController();
   final routeTimeStart = TextEditingController();

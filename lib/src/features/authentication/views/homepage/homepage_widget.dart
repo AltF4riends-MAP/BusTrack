@@ -1,3 +1,9 @@
+import 'package:bustrack/src/features/authentication/controllers/readAllController.dart';
+import 'package:bustrack/src/features/authentication/models/bus.dart';
+import 'package:bustrack/src/features/authentication/models/route.dart';
+import 'package:bustrack/src/features/authentication/models/stop.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:bustrack/src/features/authentication/controllers/navigations.dart';
 import 'package:bustrack/src/features/authentication/views/login/firebaseauth.dart';
@@ -13,9 +19,17 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late bool _isLoggedIn;
 
+  User? currentUser = null;
+  List<Bus> _busList = [];
+  List<Routes> _routeList = [];
+  List<Stop> _stopList = [];
+  String userBusDriver = "";
+  Bus busDriver = new Bus("", "", "", "", "", "", "", 0, 0);
+
   @override
   void initState() {
     super.initState();
+    fetchData();
     _isLoggedIn = true;
   }
 
@@ -124,7 +138,8 @@ class _HomePageState extends State<HomePage> {
                       "assets/images/homepage/BusIcon.png",
                       "Location",
                       onTap: () {
-                        Navigator.pushNamed(context, viewBusDriver);
+                        Navigator.pushNamed(context, viewBusDriver,
+                            arguments: busDriver);
                       },
                     ),
                   ],
@@ -171,6 +186,53 @@ class _HomePageState extends State<HomePage> {
         },
       ),
     );
+  }
+
+  Future<void> fetchData() async {
+    ReadAllController read = ReadAllController();
+    _busList = await read.getAllBus();
+    _routeList = await read.getAllRoute();
+    _stopList = await read.getAllStop();
+    for (Routes route in _routeList) {
+      route.setStop(_stopList);
+      print(route.stop);
+    }
+
+    for (Bus bus in _busList) {
+      bus.setRoute(_routeList);
+      print(bus.route.stop[0].stopName);
+    }
+
+    final User? user = FirebaseAuth.instance.currentUser;
+    final dBase = FirebaseFirestore.instance;
+    final newUserRef = dBase.collection("User").doc(user?.uid);
+    final doc = await newUserRef.get();
+    if (doc.exists) {
+      if (doc.data()?['busDriver'] != null) {
+        userBusDriver = doc.data()?['busDriver'];
+      }
+    }
+
+    for (Bus bus in _busList) {
+      if (bus.id == userBusDriver) {
+        busDriver = bus;
+        print(
+            "BRUHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
+        print(busDriver.busName);
+      }
+
+      print(
+          "YOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+    }
+
+    // Check if the user is not null
+    if (user != null) {
+      currentUser = user;
+    }
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Widget _buildImageButton(String imagePath, String label,

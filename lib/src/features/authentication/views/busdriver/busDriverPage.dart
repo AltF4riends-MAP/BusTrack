@@ -1,10 +1,21 @@
+import 'dart:async';
+
 import 'package:bustrack/src/features/authentication/controllers/navigations.dart';
+import 'package:bustrack/src/features/authentication/controllers/readAllController.dart';
+import 'package:bustrack/src/features/authentication/models/bus.dart';
+import 'package:bustrack/src/features/authentication/models/route.dart';
+import 'package:bustrack/src/features/authentication/models/stop.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class BusDriverPage extends StatefulWidget {
+  final Bus data;
+
+  BusDriverPage(this.data);
+
   @override
   _BusDriverPageState createState() => _BusDriverPageState();
 }
@@ -13,14 +24,22 @@ class _BusDriverPageState extends State<BusDriverPage> {
   GoogleMapController? _mapController;
   Marker? _currentLocationMarker;
   Position? _currentPosition;
+  ValueNotifier<bool> trackingNotifier = ValueNotifier<bool>(true);
+  StreamSubscription<Position>? _positionStreamSubscription;
 
   LatLng _center = const LatLng(1.5754316068552179, 103.61788395334298);
-  String buttonText = "STOP";
+  String buttonText = "";
   Color boxColor = Color.fromRGBO(255, 0, 0, 1);
+  String busName = "";
+
+  List<Bus> busList = [];
+  List<Routes> routeList = [];
+  List<Stop> stopList = [];
 
   @override
   void initState() {
     super.initState();
+    fetchData();
     _checkPermissionsAndGetLocation();
   }
 
@@ -68,13 +87,12 @@ class _BusDriverPageState extends State<BusDriverPage> {
   }
 
   void _listenToLocationUpdates() {
-    Geolocator.getPositionStream(
+    _positionStreamSubscription = Geolocator.getPositionStream(
       locationSettings: LocationSettings(
         accuracy: LocationAccuracy.high,
         distanceFilter: 10,
       ),
-    ).listen((Position position) {
-      // ignore: unnecessary_null_comparison
+    ).listen((Position position) async {
       if (position != null) {
         setState(() {
           _currentPosition = position;
@@ -88,11 +106,30 @@ class _BusDriverPageState extends State<BusDriverPage> {
           );
         });
 
+        final busInformation = <String, dynamic>{
+          "posX": position.latitude,
+          "posY": position.longitude
+        };
+        final dBase = FirebaseFirestore.instance;
+        await dBase
+            .collection("Bus")
+            .doc(widget.data.id)
+            .update(busInformation);
+
         _mapController?.animateCamera(CameraUpdate.newLatLng(
           LatLng(position.latitude, position.longitude),
         ));
       }
     });
+  }
+
+  void _toggleTracking() {
+    if (trackingNotifier.value) {
+      _positionStreamSubscription?.pause();
+    } else {
+      _positionStreamSubscription?.resume();
+    }
+    trackingNotifier.value = !trackingNotifier.value;
   }
 
   void _showBottomSheet(BuildContext context) {
@@ -109,40 +146,48 @@ class _BusDriverPageState extends State<BusDriverPage> {
               expand: false,
               builder:
                   (BuildContext context, ScrollController scrollController) {
-                return Container(
-                  color: Colors.white,
-                  width: 1000,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          width: 100,
-                          height: 100,
-                          child: FloatingActionButton(
-                            backgroundColor: boxColor,
-                            onPressed: () {
-                              setState(() {
-                                buttonText =
-                                    buttonText == "STOP" ? "DRIVE" : "STOP";
-                                if (buttonText == "STOP") {
-                                  boxColor = Color.fromRGBO(255, 0, 0, 1);
-                                } else {
-                                  boxColor = Color.fromRGBO(115, 0, 255, 1);
-                                }
-                              });
-                            },
-                            child: Text(
-                              buttonText,
-                              style: TextStyle(
-                                color: Color.fromRGBO(255, 255, 255, 1),
+                return ValueListenableBuilder(
+                  valueListenable: trackingNotifier,
+                  builder: (context, tracking, child) {
+                    return Container(
+                      color: Colors.white,
+                      width: 1000,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            SizedBox(height: 10),
+                            Text(busName),
+                            SizedBox(
+                              width: 100,
+                              height: 100,
+                              child: FloatingActionButton(
+                                backgroundColor: boxColor,
+                                onPressed: () {
+                                  setState(() {
+                                    changeButton();
+                                    Navigator.pop(context);
+                                  });
+                                },
+                                child: Text(
+                                  buttonText,
+                                  style: TextStyle(
+                                    color: Color.fromRGBO(255, 255, 255, 1),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                            ElevatedButton(
+                              onPressed: _toggleTracking,
+                              child: Text(tracking
+                                  ? "Stop Tracking"
+                                  : "Start Tracking"),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
+                      ),
+                    );
+                  },
                 );
               },
             );
@@ -150,6 +195,53 @@ class _BusDriverPageState extends State<BusDriverPage> {
         );
       },
     );
+  }
+
+  Future<void> fetchData() async {
+    ReadAllController read = ReadAllController();
+    busList = await read.getAllBus();
+    routeList = await read.getAllRoute();
+    stopList = await read.getAllStop();
+
+    for (Routes route in routeList) {
+      route.setStop(stopList);
+    }
+
+    for (Bus bus in busList) {
+      bus.setRoute(routeList);
+    }
+
+    setState(() {
+      buttonText = widget.data.busDriveStatus;
+      if (buttonText == "STOP") {
+        boxColor = Color.fromRGBO(255, 0, 0, 1);
+      } else {
+        boxColor = Color.fromRGBO(115, 0, 255, 1);
+      }
+      busName = widget.data.busName;
+    });
+  }
+
+  void changeButton() async {
+    final dBase = FirebaseFirestore.instance;
+
+    if (buttonText == "STOP") {
+      final busInformation = {"busDriveStatus": "DRIVE"};
+      await dBase.collection("Bus").doc(widget.data.id).update(busInformation);
+      setState(() {
+        buttonText = "DRIVE";
+        widget.data.busDriveStatus = "DRIVE";
+        boxColor = Color.fromRGBO(115, 0, 255, 1);
+      });
+    } else {
+      final busInformation = {"busDriveStatus": "STOP"};
+      await dBase.collection("Bus").doc(widget.data.id).update(busInformation);
+      setState(() {
+        buttonText = "STOP";
+        widget.data.busDriveStatus = "STOP";
+        boxColor = Color.fromRGBO(255, 0, 0, 1);
+      });
+    }
   }
 
   @override
@@ -200,5 +292,11 @@ class _BusDriverPageState extends State<BusDriverPage> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _positionStreamSubscription?.cancel();
+    super.dispose();
   }
 }

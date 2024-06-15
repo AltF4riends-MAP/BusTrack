@@ -27,6 +27,9 @@ class ReadAllController {
           data['busPlateNum'] ?? '',
           data['busRoute'] ?? '',
           data['busStatus'] ?? '',
+          data['busDriveStatus'] ?? '',
+          data['posX'] ?? 0,
+          data['poxY'] ?? 0,
         );
         busList.add(bus); // Add the Bus object to the list
         print(bus.busName);
