@@ -1,5 +1,7 @@
 import 'package:bustrack/src/features/authentication/controllers/navigations.dart';
 import 'package:bustrack/src/features/authentication/views/busdriver/busDriverPage.dart';
+import 'package:bustrack/src/features/authentication/views/businfo/busInformation.dart';
+import 'package:bustrack/src/features/authentication/views/businfo/busList.dart';
 import 'package:bustrack/src/features/authentication/views/forgotpassword/forgetPassword.dart';
 import 'package:bustrack/src/features/authentication/views/homepage/homepage_widget.dart';
 import 'package:bustrack/src/features/authentication/views/login/login_widget.dart';
@@ -62,6 +64,7 @@ Route<dynamic>? createRoute(settings) {
       return MaterialPageRoute(
         builder: (context) => (ManageBus(settings.arguments)),
       );
+      
     // case viewTableDetailRoute:
     // return MaterialPageRoute(
     //   builder: (context) => (ViewTableDetail(text: '',)), //
@@ -70,6 +73,16 @@ Route<dynamic>? createRoute(settings) {
     case viewBusDriver:
       return MaterialPageRoute(
         builder: (context) => (BusDriverPage(settings.arguments)),
+      );
+
+    case busList:
+      return MaterialPageRoute(
+        builder: (context) => (BusList())
+      );
+
+    case busInformation:
+     return MaterialPageRoute(
+      builder: (context) => (BusInformation(currentBus: settings.arguments))
       );
   }
   return null;

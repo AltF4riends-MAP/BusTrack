@@ -10,3 +10,5 @@ const String addTimetableRoute = '/addTimetable';
 const String manageTimetableRoute = '/manageTimetable';
 const String viewTableDetailRoute = '/viewTableDetail';
 const String viewBusDriver = '/viewBusDriver';
+const String busList = '/busList';
+const String busInformation = '/busInformation';

@@ -130,6 +130,7 @@ class _HomePageState extends State<HomePage> {
                       "assets/images/homepage/LocationIcon.png",
                       "Location",
                       onTap: () {
+                        Navigator.pushNamed(context, busList);
                         // Navigate to location page
                       },
                     ),
