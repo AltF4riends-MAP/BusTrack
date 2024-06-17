@@ -159,36 +159,11 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ],
                     ),
-                    
-                    // const SizedBox(height: 5),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.center,
-                    //   children: [
-                    //     const Text("Don't have any Friends?"),
-                    //     const SizedBox(width: 5),
-                    //     GestureDetector(
-                    //       onTap: () {
-                    //         Navigator.push(
-                    //             context,
-                    //             MaterialPageRoute(
-                    //               builder: (context) => Testing(),
-                    //             ));
-                    //       },
-                    //       child: const Text(
-                    //         "Click Here",
-                    //         style: TextStyle(
-                    //             color: Colors.blue,
-                    //             fontWeight: FontWeight.bold),
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
-                    
                   ],
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -203,9 +178,9 @@ class _LoginPageState extends State<LoginPage> {
       final String email = _emailController.text;
       final String password = _passwordController.text;
       final User? user =
-          await _auth.signInWithEmailAndPassword(email, password);
+          await _auth.signInWithEmailAndPassword(email, password, context);
       if (user != null) {
-        Navigator.pushNamed(context, homeRoute);
+        // The navigation is handled in the signInWithEmailAndPassword method based on the role
       }
     } catch (e) {
       print('Error signing in: $e');
