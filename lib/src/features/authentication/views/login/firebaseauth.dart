@@ -34,39 +34,14 @@ class FirebaseAuthService {
   }
 
   Future<User?> signInWithEmailAndPassword(
-      String email, String password, BuildContext context) async {
+      String email, String password) async {
     try {
       UserCredential credential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      User? user = credential.user;
-
-      print("before checking user");
-      if (user != null) {
-        // Retrieve user role from Firestore
-        print("user exists");
-
-        DocumentSnapshot userDoc =
-            await _firestore.collection('User').doc(user.uid).get();
-
-        if (userDoc.exists) {
-          String role = userDoc['role'];
-          // Navigate based on role
-          if (role == 'Admin') {
-            Navigator.pushNamed(context, homeRoute);
-          } else if (role == 'user') {
-            Navigator.pushNamed(context, viewTimetableRouteuser);
-            print("done");
-          }
-        }
-      }
-
-      return user;
+      return credential.user;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found' || e.code == 'wrong-password') {
-        // Handle user not found or wrong password error
-      } else {
-        // Handle other errors
-      }
+      } else {}
     }
     return null;
   }
