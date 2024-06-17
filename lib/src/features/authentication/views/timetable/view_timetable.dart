@@ -6,6 +6,7 @@ import 'package:bustrack/src/features/authentication/controllers/readAllControll
 import 'package:bustrack/src/features/authentication/models/bus.dart';
 import 'package:bustrack/src/features/authentication/models/stop.dart';
 import 'package:bustrack/src/features/authentication/models/route.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ViewTimetable extends StatefulWidget {
   const ViewTimetable({Key? key}) : super(key: key);
@@ -21,6 +22,7 @@ class _ViewTimetableState extends State<ViewTimetable> {
   late GoogleMapController mapController;
 
   LatLng _center = const LatLng(1.5754316068552179, 103.61788395334298);
+  Set<Marker> _markers = {};
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -30,6 +32,7 @@ class _ViewTimetableState extends State<ViewTimetable> {
   void initState() {
     super.initState();
     fetchData();
+    listenToBusUpdates();
   }
 
   @override
@@ -55,6 +58,7 @@ class _ViewTimetableState extends State<ViewTimetable> {
                   target: _center,
                   zoom: 17.0,
                 ),
+                markers: _markers,
               ),
             ),
           ),
@@ -95,126 +99,123 @@ class _ViewTimetableState extends State<ViewTimetable> {
                           itemBuilder: (context, index) {
                             final bus = busList[index];
                             return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    setCentre(bus);
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      border: Border.all(color: Colors.grey),
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.1),
-                                          spreadRadius: 3,
-                                          blurRadius: 5,
-                                          offset: Offset(0, 3),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              IconButton(
-                                                icon: const Icon(Icons
-                                                    .directions_bus_filled_rounded),
-                                                onPressed: () async {},
-                                              ),
-                                              SizedBox(
-                                                width: 70,
-                                                child: Text(
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  bus.busName,
-                                                  style: TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 70,
-                                              ),
-                                              IconButton(
-                                                icon: const Icon(
-                                                    Icons.remove_red_eye),
-                                                onPressed: () async {},
-                                              ),
-                                              IconButton(
-                                                icon:
-                                                    const Icon(Icons.settings),
-                                                onPressed: () async {
-                                                  Navigator.pushNamed(context,
-                                                      manageTimetableRoute,
-                                                      arguments: bus);
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              IconButton(
-                                                icon: const Icon(
-                                                    Icons.punch_clock_outlined),
-                                                onPressed: () async {},
-                                              ),
-                                              Text(
-                                                bus.route.routeTimeStart +
-                                                    " - " +
-                                                    bus.route.routeTimeEnd,
+                              padding: const EdgeInsets.all(8.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  setCentre(bus);
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(color: Colors.grey),
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        spreadRadius: 3,
+                                        blurRadius: 5,
+                                        offset: Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(Icons
+                                                  .directions_bus_filled_rounded),
+                                              onPressed: () async {},
+                                            ),
+                                            SizedBox(
+                                              width: 70,
+                                              child: Text(
+                                                overflow: TextOverflow.ellipsis,
+                                                bus.busName,
                                                 style: TextStyle(
                                                     fontSize: 14,
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              IconButton(
-                                                icon: const Icon(
-                                                    Icons.stop_circle_outlined),
-                                                onPressed: () async {},
+                                            ),
+                                            SizedBox(
+                                              width: 70,
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(
+                                                  Icons.remove_red_eye),
+                                              onPressed: () async {},
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(Icons.settings),
+                                              onPressed: () async {
+                                                Navigator.pushNamed(context,
+                                                    manageTimetableRoute,
+                                                    arguments: bus);
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(
+                                                  Icons.punch_clock_outlined),
+                                              onPressed: () async {},
+                                            ),
+                                            Text(
+                                              bus.route.routeTimeStart +
+                                                  " - " +
+                                                  bus.route.routeTimeEnd,
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(
+                                                  Icons.stop_circle_outlined),
+                                              onPressed: () async {},
+                                            ),
+                                            Expanded(
+                                              child: Text(
+                                                bus.route.stop[0].stopName +
+                                                    " to\n " +
+                                                    bus.route.stop.last
+                                                        .stopName,
+                                                style: TextStyle(
+                                                    fontSize: 10,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 4,
+                                                softWrap: true,
                                               ),
-                                              Expanded(
-                                                child: Text(
-                                                  bus.route.stop[0].stopName +
-                                                      " to\n " +
-                                                      bus.route.stop.last
-                                                          .stopName,
-                                                  style: TextStyle(
-                                                      fontSize: 10,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  maxLines: 4,
-                                                  softWrap: true,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Divider(
-                                            color: bus.busStatus == "active"
-                                                ? Colors.lightGreen
-                                                : Colors.red,
-                                            height: 50,
-                                            thickness: 8,
-                                            indent: 10,
-                                            endIndent: 10,
-                                          ),
-                                        ],
-                                      ),
+                                            ),
+                                          ],
+                                        ),
+                                        Divider(
+                                          color: bus.busStatus == "active"
+                                              ? Colors.lightGreen
+                                              : Colors.red,
+                                          height: 50,
+                                          thickness: 8,
+                                          indent: 10,
+                                          endIndent: 10,
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ));
+                                ),
+                              ),
+                            );
                           },
                         ),
                       ),
@@ -278,23 +279,61 @@ class _ViewTimetableState extends State<ViewTimetable> {
   }
 
   void setCentre(Bus bus) {
-    LatLng newCenter = LatLng(bus.route.stop[0].posX, bus.route.stop[0].posY);
+    LatLng newCenter = LatLng(bus.posX, bus.posY);
     mapController.animateCamera(
       CameraUpdate.newLatLng(newCenter),
     );
     setState(() {
       _center = newCenter;
+      _addMarker(_center, bus.busName);
     });
     print(_center);
+  }
 
-    void _sendData(BuildContext context, Bus currentBus) async {
-      // start the SecondScreen and wait for it to finish with a result
+  void _addMarker(LatLng position, String title) async {
+    BitmapDescriptor busMarker = await BitmapDescriptor.fromAssetImage(
+      ImageConfiguration(size: Size(48, 48)),
+      'assets/images/homepage/BusIcon2.png',
+    );
 
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ViewTableDetail(currentBus: currentBus),
-          ));
-    }
+    setState(() {
+      _markers.add(
+        Marker(
+          markerId: MarkerId(title),
+          position: position,
+          infoWindow: InfoWindow(
+            title: title,
+          ),
+          icon: busMarker,
+        ),
+      );
+    });
+  }
+
+  void listenToBusUpdates() {
+    FirebaseFirestore.instance.collection('Bus').snapshots().listen((snapshot) {
+      print(
+          "CHANGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+      snapshot.docChanges.forEach((change) {
+        if (change.type == DocumentChangeType.modified) {
+          Bus updatedBus = Bus.fromFirestore(change.doc);
+          _updateBusMarker(updatedBus);
+        }
+      });
+    });
+  }
+
+  void _updateBusMarker(Bus bus) {
+    LatLng newPosition = LatLng(bus.posX, bus.posY);
+    print(newPosition);
+    print(bus.busName);
+    print(bus);
+    setState(() {
+      _markers.removeWhere((marker) => marker.markerId.value == bus.busName);
+      _addMarker(newPosition, bus.busName);
+    });
+    mapController.animateCamera(
+      CameraUpdate.newLatLng(newPosition),
+    );
   }
 }

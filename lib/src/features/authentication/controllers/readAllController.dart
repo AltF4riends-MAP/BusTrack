@@ -29,10 +29,11 @@ class ReadAllController {
           data['busStatus'] ?? '',
           data['busDriveStatus'] ?? '',
           data['posX'] ?? 0,
-          data['poxY'] ?? 0,
+          data['posY'] ?? 0,
         );
         busList.add(bus); // Add the Bus object to the list
         print(bus.busName);
+        print(bus.posY);
       });
     } catch (e) {
       // Handle error

@@ -20,7 +20,9 @@ class Bus {
     final id = doc.id;
     final busName = data['busName'] ?? '';
     final busRoute = data['busRoute'] ?? '';
-    return Bus(id, busName, '', '', busRoute, '', '', 0, 0);
+    final posX = data['posX'] ?? 0.0;
+    final posY = data['posY'] ?? 0.0;
+    return Bus(id, busName, '', '', busRoute, '', '', posX, posY);
   }
   void setRoute(List<Routes> routeList) {
     for (Routes routes in routeList) {
