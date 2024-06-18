@@ -9,6 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class BusDriverPage extends StatefulWidget {
@@ -123,6 +124,8 @@ class _BusDriverPageState extends State<BusDriverPage> {
     });
   }
 
+  late List<Map<String, dynamic>> timeList = List.from(createtimeTable());
+
   void _toggleTracking() {
     if (trackingNotifier.value) {
       _positionStreamSubscription?.pause();
@@ -177,6 +180,30 @@ class _BusDriverPageState extends State<BusDriverPage> {
                                 ),
                               ),
                             ),
+                            SizedBox(height: 10),
+                            Container(
+                                width: 300,
+                                height: 200,
+                                decoration: BoxDecoration(
+                                  color: Color.fromRGBO(255, 255, 255, 1),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: Color.fromARGB(255, 0, 0, 0),
+                                    width: 2,
+                                  ),
+                                ),
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.vertical,
+                                  itemCount: timeList.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    var timeSlot = timeList[index];
+                                    return ListTile(
+                                      title: Text(timeSlot['startTime'] + " - " + timeSlot['endTime']),
+                                      );
+                                  },
+                                )),
                             ElevatedButton(
                               onPressed: _toggleTracking,
                               child: Text(tracking
@@ -242,6 +269,41 @@ class _BusDriverPageState extends State<BusDriverPage> {
         boxColor = Color.fromRGBO(255, 0, 0, 1);
       });
     }
+  }
+
+  List<Map<String, dynamic>> createtimeTable() {
+    DateTime start = DateTime.parse(
+        '2023-05-10 ' + widget.data.route.routeTimeStart + ':00');
+    DateTime end =
+        DateTime.parse('2023-05-10 ' + widget.data.route.routeTimeEnd + ':00');
+
+    Duration duration = Duration(minutes: 30);
+
+    late DateTime start1 = start;
+    late DateTime start2;
+
+    List<Map<String, dynamic>> timetable = [];
+
+    for (var i = 0; i < 30; i++) {
+      start2 = start1;
+      start1 = start1.add(duration);
+      Map<String, dynamic> ttSlot = new Map();
+
+      late var oldTimeForm = DateFormat('kk:mm').format(start2);
+      late var startTimeForm = DateFormat('kk:mm').format(start1);
+      late var endTimeForm = DateFormat('kk:mm').format(end);
+
+      ttSlot["startTime"] = oldTimeForm;
+      ttSlot["endTime"] = startTimeForm;
+
+      timetable.add(ttSlot);
+
+      if (startTimeForm == endTimeForm) {
+        break;
+      }
+    }
+
+    return timetable;
   }
 
   @override
