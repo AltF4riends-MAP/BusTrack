@@ -18,6 +18,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late bool _isLoggedIn;
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   User? currentUser = null;
   List<Bus> _busList = [];
@@ -112,8 +114,27 @@ class _HomePageState extends State<HomePage> {
                         _buildImageButton(
                           "assets/images/homepage/TimetableIcon.png",
                           "Timetable",
-                          onTap: () {
-                            Navigator.pushNamed(context, viewTimetableRoute);
+                          onTap: () async {
+                            if (currentUser != null) {
+                              DocumentSnapshot userDoc = await _firestore
+                                  .collection('User')
+                                  .doc(currentUser!.uid)
+                                  .get();
+
+                              if (userDoc.exists) {
+                                String role = userDoc['role'];
+                                // Navigate based on role
+                                if (role == 'Admin') {
+                                  Navigator.pushNamed(
+                                      context, viewTimetableRoute);
+                                } else if (role == 'user') {
+                                  Navigator.pushNamed(
+                                      context, viewTimetableRouteuser);
+                                  print("done");
+                                }
+                              }
+                            }
+                            ;
                           },
                         ),
                         _buildImageButton(

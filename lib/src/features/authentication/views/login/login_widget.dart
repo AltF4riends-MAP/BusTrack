@@ -159,7 +159,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ],
                     ),
-                    
+
                     // const SizedBox(height: 5),
                     // Row(
                     //   mainAxisAlignment: MainAxisAlignment.center,
@@ -183,7 +183,6 @@ class _LoginPageState extends State<LoginPage> {
                     //     ),
                     //   ],
                     // ),
-                    
                   ],
                 ),
               ),
