@@ -285,12 +285,12 @@ class _ViewTimetableState extends State<ViewTimetable> {
     );
     setState(() {
       _center = newCenter;
-      _addMarker(_center, bus.busName);
+      _addMarker(_center, bus.busName, bus.busDriveStatus);
     });
     print(_center);
   }
 
-  void _addMarker(LatLng position, String title) async {
+  void _addMarker(LatLng position, String title, String status) async {
     BitmapDescriptor busMarker = await BitmapDescriptor.fromAssetImage(
       ImageConfiguration(size: Size(48, 48)),
       'assets/images/homepage/BusIcon2.png',
@@ -301,9 +301,7 @@ class _ViewTimetableState extends State<ViewTimetable> {
         Marker(
           markerId: MarkerId(title),
           position: position,
-          infoWindow: InfoWindow(
-            title: title,
-          ),
+          infoWindow: InfoWindow(title: title, snippet: status),
           icon: busMarker,
         ),
       );
@@ -330,7 +328,7 @@ class _ViewTimetableState extends State<ViewTimetable> {
     print(bus);
     setState(() {
       _markers.removeWhere((marker) => marker.markerId.value == bus.busName);
-      _addMarker(newPosition, bus.busName);
+      _addMarker(newPosition, bus.busName, bus.busDriveStatus);
     });
     mapController.animateCamera(
       CameraUpdate.newLatLng(newPosition),
