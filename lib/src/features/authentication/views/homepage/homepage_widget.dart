@@ -158,7 +158,7 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(height: 20.0),
                     _buildImageButton(
                       "assets/images/homepage/BusIcon.png",
-                      "Location",
+                      "Bus Driver",
                       onTap: () {
                         Navigator.pushNamed(context, viewBusDriver,
                             arguments: busDriver);

@@ -1,5 +1,6 @@
 import 'package:bustrack/src/features/authentication/controllers/navigations.dart';
 import 'package:bustrack/src/features/authentication/views/timetable/view_TableDetail.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:bustrack/src/features/authentication/controllers/readAllController.dart';
@@ -21,6 +22,7 @@ class _ViewTimetableState extends State<ViewTimetableUser> {
   late GoogleMapController mapController;
 
   LatLng _center = const LatLng(1.5754316068552179, 103.61788395334298);
+  Set<Marker> _markers = {};
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -30,6 +32,7 @@ class _ViewTimetableState extends State<ViewTimetableUser> {
   void initState() {
     super.initState();
     fetchData();
+    listenToBusUpdates();
   }
 
   @override
@@ -55,6 +58,7 @@ class _ViewTimetableState extends State<ViewTimetableUser> {
                   target: _center,
                   zoom: 17.0,
                 ),
+                markers: _markers,
               ),
             ),
           ),
@@ -262,23 +266,59 @@ class _ViewTimetableState extends State<ViewTimetableUser> {
   }
 
   void setCentre(Bus bus) {
-    LatLng newCenter = LatLng(bus.route.stop[0].posX, bus.route.stop[0].posY);
+    LatLng newCenter = LatLng(bus.posX, bus.posY);
     mapController.animateCamera(
       CameraUpdate.newLatLng(newCenter),
     );
     setState(() {
       _center = newCenter;
+      _addMarker(_center, bus.busName, bus.busDriveStatus);
     });
     print(_center);
+  }
 
-    void _sendData(BuildContext context, Bus currentBus) async {
-      // start the SecondScreen and wait for it to finish with a result
+  void _addMarker(LatLng position, String title, String status) async {
+    BitmapDescriptor busMarker = await BitmapDescriptor.fromAssetImage(
+      ImageConfiguration(size: Size(48, 48)),
+      'assets/images/homepage/BusIcon2.png',
+    );
 
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ViewTableDetail(currentBus: currentBus),
-          ));
-    }
+    setState(() {
+      _markers.add(
+        Marker(
+          markerId: MarkerId(title),
+          position: position,
+          infoWindow: InfoWindow(title: title, snippet: status),
+          icon: busMarker,
+        ),
+      );
+    });
+  }
+
+  void listenToBusUpdates() {
+    FirebaseFirestore.instance.collection('Bus').snapshots().listen((snapshot) {
+      print(
+          "CHANGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+      snapshot.docChanges.forEach((change) {
+        if (change.type == DocumentChangeType.modified) {
+          Bus updatedBus = Bus.fromFirestore(change.doc);
+          _updateBusMarker(updatedBus);
+        }
+      });
+    });
+  }
+
+  void _updateBusMarker(Bus bus) {
+    LatLng newPosition = LatLng(bus.posX, bus.posY);
+    print(newPosition);
+    print(bus.busName);
+    print(bus);
+    setState(() {
+      _markers.removeWhere((marker) => marker.markerId.value == bus.busName);
+      _addMarker(newPosition, bus.busName, bus.busDriveStatus);
+    });
+    mapController.animateCamera(
+      CameraUpdate.newLatLng(newPosition),
+    );
   }
 }
