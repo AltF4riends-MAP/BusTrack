@@ -143,7 +143,7 @@ class _BusDriverPageState extends State<BusDriverPage> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return DraggableScrollableSheet(
-              initialChildSize: 0.5,
+              initialChildSize: 0.6,
               minChildSize: 0.25,
               maxChildSize: 0.75,
               expand: false,
@@ -154,36 +154,39 @@ class _BusDriverPageState extends State<BusDriverPage> {
                   builder: (context, tracking, child) {
                     return Container(
                       color: Colors.white,
-                      width: 1000,
+                      width: double.infinity,
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          children: [
-                            SizedBox(height: 10),
-                            Text(busName),
-                            SizedBox(
-                              width: 100,
-                              height: 100,
-                              child: FloatingActionButton(
-                                backgroundColor: boxColor,
-                                onPressed: () {
-                                  setState(() {
-                                    changeButton();
-                                    Navigator.pop(context);
-                                  });
-                                },
-                                child: Text(
-                                  buttonText,
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(255, 255, 255, 1),
+                        child: SingleChildScrollView(
+                          controller: scrollController,
+                          child: Column(
+                            children: [
+                              SizedBox(height: 20),
+                              Text(busName),
+                              SizedBox(height: 20),
+                              SizedBox(
+                                width: 100,
+                                height: 100,
+                                child: FloatingActionButton(
+                                  backgroundColor: boxColor,
+                                  onPressed: () {
+                                    setState(() {
+                                      changeButton();
+                                      Navigator.pop(context);
+                                    });
+                                  },
+                                  child: Text(
+                                    buttonText,
+                                    style: TextStyle(
+                                      color: Color.fromRGBO(255, 255, 255, 1),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            SizedBox(height: 10),
-                            Container(
+                              SizedBox(height: 10),
+                              Container(
                                 width: 300,
-                                height: 200,
+                                height: 330,
                                 decoration: BoxDecoration(
                                   color: Color.fromRGBO(255, 255, 255, 1),
                                   borderRadius: BorderRadius.circular(10),
@@ -199,18 +202,32 @@ class _BusDriverPageState extends State<BusDriverPage> {
                                   itemBuilder:
                                       (BuildContext context, int index) {
                                     var timeSlot = timeList[index];
-                                    return ListTile(
-                                      title: Text(timeSlot['startTime'] + " - " + timeSlot['endTime']),
-                                      );
+                                    return Column(children: [
+                                      ListTile(
+                                        title: Text(timeSlot['startTime'] +
+                                            " - " +
+                                            timeSlot['endTime']),
+                                      ),
+                                      Divider(
+                                        color: Colors.grey,
+                                        height: 50,
+                                        thickness: 4,
+                                        indent: 10,
+                                        endIndent: 10,
+                                      ),
+                                    ]);
                                   },
-                                )),
-                            ElevatedButton(
-                              onPressed: _toggleTracking,
-                              child: Text(tracking
-                                  ? "Stop Tracking"
-                                  : "Start Tracking"),
-                            ),
-                          ],
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              ElevatedButton(
+                                onPressed: _toggleTracking,
+                                child: Text(tracking
+                                    ? "Stop Tracking"
+                                    : "Start Tracking"),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );
