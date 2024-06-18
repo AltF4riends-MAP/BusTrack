@@ -289,38 +289,51 @@ class _BusDriverPageState extends State<BusDriverPage> {
   }
 
   List<Map<String, dynamic>> createtimeTable() {
-    DateTime start = DateTime.parse(
-        '2023-05-10 ' + widget.data.route.routeTimeStart + ':00');
-    DateTime end =
-        DateTime.parse('2023-05-10 ' + widget.data.route.routeTimeEnd + ':00');
+    if (widget.data.route.routeTimeStart.isNotEmpty ||
+        widget.data.route.routeTimeEnd.isNotEmpty) {
+      DateTime start = DateTime.parse(
+          '2023-05-10 ' + widget.data.route.routeTimeStart + ':00');
+      DateTime end = DateTime.parse(
+          '2023-05-10 ' + widget.data.route.routeTimeEnd + ':00');
 
-    Duration duration = Duration(minutes: 30);
+      Duration duration = Duration(minutes: 30);
 
-    late DateTime start1 = start;
-    late DateTime start2;
+      late DateTime start1 = start;
+      late DateTime start2;
 
-    List<Map<String, dynamic>> timetable = [];
+      List<Map<String, dynamic>> timetable = [];
 
-    for (var i = 0; i < 30; i++) {
-      start2 = start1;
-      start1 = start1.add(duration);
-      Map<String, dynamic> ttSlot = new Map();
+      for (var i = 0; i < 30; i++) {
+        start2 = start1;
+        start1 = start1.add(duration);
+        Map<String, dynamic> ttSlot = new Map();
 
-      late var oldTimeForm = DateFormat('kk:mm').format(start2);
-      late var startTimeForm = DateFormat('kk:mm').format(start1);
-      late var endTimeForm = DateFormat('kk:mm').format(end);
+        late var oldTimeForm = DateFormat('kk:mm').format(start2);
+        late var startTimeForm = DateFormat('kk:mm').format(start1);
+        late var endTimeForm = DateFormat('kk:mm').format(end);
 
-      ttSlot["startTime"] = oldTimeForm;
-      ttSlot["endTime"] = startTimeForm;
+        ttSlot["startTime"] = oldTimeForm;
+        ttSlot["endTime"] = startTimeForm;
 
-      timetable.add(ttSlot);
+        timetable.add(ttSlot);
 
-      if (startTimeForm == endTimeForm) {
-        break;
+        if (startTimeForm == endTimeForm) {
+          break;
+        }
       }
-    }
 
-    return timetable;
+      return timetable;
+
+    } else {
+      List<Map<String, dynamic>> error = [
+        {
+          "startTime" : "An Error has occured",
+          "endTime" : "Please try again"
+        }
+
+      ];
+      return error;
+    }
   }
 
   @override
