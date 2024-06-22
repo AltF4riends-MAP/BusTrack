@@ -75,10 +75,13 @@ class _BusInformationState extends State<BusInformation> {
   Widget updateBusBorder(String sT, String eT) {
     DateTime currentTime = DateTime.now();
 
+    late var nowTimeForm = DateFormat('kk:mm').format(currentTime);
+
+    DateTime nowTime = DateTime.parse('2023-05-10 ' + nowTimeForm + ':00');
     DateTime startTime = DateTime.parse('2023-05-10 ' + sT + ':00');
     DateTime endTime = DateTime.parse('2023-05-10 ' + eT + ':00');
 
-    if (currentTime.isBefore(endTime) && currentTime.isAfter(startTime)) {
+    if (nowTime.isBefore(endTime) && nowTime.isAfter(startTime)) {
       return Icon(Icons.done);
     }
 
