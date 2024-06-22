@@ -199,6 +199,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           "lName": lName.text,
                           "password": password.text,
                           "profilePice": "",
+                          "role": "User"
                         };
 
                         dBase
