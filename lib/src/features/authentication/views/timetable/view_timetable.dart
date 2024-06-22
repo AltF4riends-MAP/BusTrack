@@ -148,7 +148,11 @@ class _ViewTimetableState extends State<ViewTimetable> {
                                             IconButton(
                                               icon: const Icon(
                                                   Icons.remove_red_eye),
-                                              onPressed: () async {},
+                                              onPressed: () async {
+                                                  Navigator.pushNamed(context,
+                                                    busInformation,
+                                                    arguments: bus);
+                                              },
                                             ),
                                             IconButton(
                                               icon: const Icon(Icons.settings),

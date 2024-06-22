@@ -11,6 +11,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
+// import 'package:bustrack/src/features/authentication/views/businfo/globalVar.dart' as globals;
 
 class BusDriverPage extends StatefulWidget {
   final Bus data;
@@ -32,6 +33,8 @@ class _BusDriverPageState extends State<BusDriverPage> {
   String buttonText = "";
   Color boxColor = Color.fromRGBO(255, 0, 0, 1);
   String busName = "";
+  int busTimeIndex = -1;
+
 
   List<Bus> busList = [];
   List<Routes> routeList = [];
@@ -203,15 +206,29 @@ class _BusDriverPageState extends State<BusDriverPage> {
                                       (BuildContext context, int index) {
                                     var timeSlot = timeList[index];
                                     return Column(children: [
-                                      ListTile(
-                                        title: Text(timeSlot['startTime'] +
-                                            " - " +
-                                            timeSlot['endTime']),
+                                      Container(
+                                        width: 275,
+                                        height: 75,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          border: Border.all(
+                                            color: busTimeIndex == index
+                                                ? Colors.green.shade100
+                                                : Colors.white,
+                                            width: 2,
+                                          ),
+                                        ),
+                                        child: ListTile(
+                                          title: Text(timeSlot['startTime'] +
+                                              " - " +
+                                              timeSlot['endTime']),
+                                        ),
                                       ),
                                       Divider(
                                         color: Colors.grey,
-                                        height: 50,
-                                        thickness: 4,
+                                        height: 25,
+                                        thickness: 3,
                                         indent: 10,
                                         endIndent: 10,
                                       ),
@@ -284,6 +301,7 @@ class _BusDriverPageState extends State<BusDriverPage> {
         buttonText = "STOP";
         widget.data.busDriveStatus = "STOP";
         boxColor = Color.fromRGBO(255, 0, 0, 1);
+        updateBusIndex();
       });
     }
   }
@@ -323,16 +341,21 @@ class _BusDriverPageState extends State<BusDriverPage> {
       }
 
       return timetable;
-
     } else {
       List<Map<String, dynamic>> error = [
-        {
-          "startTime" : "An Error has occured",
-          "endTime" : "Please try again"
-        }
-
+        {"startTime": "An Error has occured", "endTime": "Please try again"}
       ];
       return error;
+    }
+  }
+
+  void updateBusIndex() {
+    if (busTimeIndex < timeList.length) {
+      busTimeIndex++;
+    } else if (busTimeIndex > timeList.length) {
+      busTimeIndex = -1;
+    } else {
+      throw (Exception);
     }
   }
 

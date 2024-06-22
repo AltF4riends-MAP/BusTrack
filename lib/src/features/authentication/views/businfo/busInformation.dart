@@ -24,35 +24,65 @@ class _BusInformationState extends State<BusInformation> {
   List<Routes> routeList = [];
   List<Stop> stopList = [];
 
-  DateTime startS = DateTime.parse('2023-05-10 07:15:00');
-  DateTime endS = DateTime.parse('2024-05-10 18:15:00');
+  String busName = "";
+  int busTimeIndex = -1;
 
-  late var startTimeForm = DateFormat('kk:mm').format(startS);
-  late var endTimeForm = DateFormat('kk:mm').format(endS);
+  List<Map<String, dynamic>> createtimeTable() {
+    if (widget.currentBus.route.routeTimeStart.isNotEmpty ||
+        widget.currentBus.route.routeTimeEnd.isNotEmpty) {
+      DateTime start = DateTime.parse(
+          '2023-05-10 ' + widget.currentBus.route.routeTimeStart + ':00');
+      DateTime end = DateTime.parse(
+          '2023-05-10 ' + widget.currentBus.route.routeTimeEnd + ':00');
 
-  Duration duration = Duration(minutes: 30);
+      Duration duration = Duration(minutes: 30);
 
-  DateTime now = DateTime.now();
-  DateTime later = DateTime.now().add(const Duration(minutes: 30));
+      late DateTime start1 = start;
+      late DateTime start2;
 
-  late DateTime startSNew = startS;
-  late DateTime startSOld = startSNew;
+      List<Map<String, dynamic>> timetable = [];
 
-  printTime()
-  {
-    for(var i = 0; i < 30; i++) {
-      startSOld = startSNew;
-      startSNew = startSNew.add(duration);
+      for (var i = 0; i < 30; i++) {
+        start2 = start1;
+        start1 = start1.add(duration);
+        Map<String, dynamic> ttSlot = new Map();
 
-      late var oldTimeForm = DateFormat('kk:mm').format(startSOld);
-      late var startTimeForm = DateFormat('kk:mm').format(startSNew);
-      late var endTimeForm = DateFormat('kk:mm').format(endS);
+        late var oldTimeForm = DateFormat('kk:mm').format(start2);
+        late var startTimeForm = DateFormat('kk:mm').format(start1);
+        late var endTimeForm = DateFormat('kk:mm').format(end);
 
-      Text(oldTimeForm + " to " + startTimeForm);
+        ttSlot["startTime"] = oldTimeForm;
+        ttSlot["endTime"] = startTimeForm;
 
-      if (startTimeForm == endTimeForm){break;}
-                      
+        timetable.add(ttSlot);
+
+        if (startTimeForm == endTimeForm) {
+          break;
+        }
       }
+
+      return timetable;
+    } else {
+      List<Map<String, dynamic>> error = [
+        {"startTime": "An Error has occured", "endTime": "Please try again"}
+      ];
+      return error;
+    }
+  }
+
+  late List<Map<String, dynamic>> timeList = List.from(createtimeTable());
+
+  Widget updateBusBorder(String sT, String eT) {
+    DateTime currentTime = DateTime.now();
+
+    DateTime startTime = DateTime.parse('2023-05-10 ' + sT + ':00');
+    DateTime endTime = DateTime.parse('2023-05-10 ' + eT + ':00');
+
+    if (currentTime.isBefore(endTime) && currentTime.isAfter(startTime)) {
+      return Icon(Icons.done);
+    }
+
+    return Icon(Icons.close);
   }
 
   @override
@@ -71,23 +101,15 @@ class _BusInformationState extends State<BusInformation> {
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: Container(
-                width: 350,
-                height: 350,
+                width: 325,
+                height: 300,
                 padding: const EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
-                  color: Color.fromRGBO(255, 255, 255, 1),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: Color.fromARGB(255, 0, 0, 0),
-                    width: 2,
-                  ),
-                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Container(
-                      width: 350,
-                      height: 125,
+                      width: 325,
+                      height: 25,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: Color.fromRGBO(255, 255, 255, 1),
@@ -101,19 +123,12 @@ class _BusInformationState extends State<BusInformation> {
                         widget.currentBus.busName + " Information",
                       ),
                     ),
+                    Divider(),
                     Container(
                       padding: const EdgeInsets.all(10),
                       width: 300,
-                      height: 125,
+                      height: 100,
                       alignment: Alignment.centerLeft,
-                      decoration: BoxDecoration(
-                        color: Color.fromRGBO(255, 255, 255, 1),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: Color.fromARGB(255, 0, 0, 0),
-                          width: 2,
-                        ),
-                      ),
                       child: Text(
                           "Bus Description: " +
                               widget.currentBus.busDescription,
@@ -123,16 +138,8 @@ class _BusInformationState extends State<BusInformation> {
                     Container(
                       padding: const EdgeInsets.all(10),
                       width: 300,
-                      height: 75,
+                      height: 50,
                       alignment: Alignment.centerLeft,
-                      decoration: BoxDecoration(
-                        color: Color.fromRGBO(255, 255, 255, 1),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: Color.fromARGB(255, 0, 0, 0),
-                          width: 2,
-                        ),
-                      ),
                       child: Text(
                           "Bus Plate Number: " + widget.currentBus.busPlateNum,
                           overflow: TextOverflow.clip),
@@ -141,16 +148,8 @@ class _BusInformationState extends State<BusInformation> {
                     Container(
                       padding: const EdgeInsets.all(10),
                       width: 300,
-                      height: 75,
+                      height: 50,
                       alignment: Alignment.centerLeft,
-                      decoration: BoxDecoration(
-                        color: Color.fromRGBO(255, 255, 255, 1),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: Color.fromARGB(255, 0, 0, 0),
-                          width: 2,
-                        ),
-                      ),
                       child: Text("Bus Status: " + widget.currentBus.busStatus,
                           overflow: TextOverflow.clip),
                     ),
@@ -170,16 +169,46 @@ class _BusInformationState extends State<BusInformation> {
                   color: Color.fromRGBO(255, 255, 255, 1),
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                    color: Color.fromARGB(255, 0, 0, 0),
+                    // color: Color.fromARGB(255, 0, 0, 0),
                     width: 2,
-                    ),
                   ),
-                child: ListView(
-                  children: [
-
-                    
-
-                ],),
+                ),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemCount: timeList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    var timeSlot = timeList[index];
+                    return Column(children: [
+                      Container(
+                        width: 275,
+                        height: 75,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: busTimeIndex == index
+                                ? Colors.green.shade100
+                                : Colors.white,
+                            width: 2,
+                          ),
+                        ),
+                        child: ListTile(
+                          title: Text(timeSlot['startTime'] +
+                              " - " +
+                              timeSlot['endTime']),
+                            trailing: updateBusBorder(timeSlot['startTime'].toString(), timeSlot['endTime'].toString()),
+                        ),
+                      ),
+                      Divider(
+                        color: Colors.grey,
+                        height: 25,
+                        thickness: 3,
+                        indent: 10,
+                        endIndent: 10,
+                      ),
+                    ]);
+                  },
+                ),
               ),
             ),
           ),

@@ -146,15 +146,15 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20.0),
-                    _buildImageButton(
-                      "assets/images/homepage/LocationIcon.png",
-                      "Location",
-                      onTap: () {
-                        Navigator.pushNamed(context, busList);
-                        // Navigate to location page
-                      },
-                    ),
+                    // const SizedBox(height: 20.0),
+                    // _buildImageButton(
+                    //   "assets/images/homepage/LocationIcon.png",
+                    //   "Location",
+                    //   onTap: () {
+                    //     Navigator.pushNamed(context, busList);
+                    //     // Navigate to location page
+                    //   },
+                    // ),
                     const SizedBox(height: 20.0),
                     _buildImageButton(
                       "assets/images/homepage/BusIcon.png",
